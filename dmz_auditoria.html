@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>DMZ – Auditoría Orden y Limpieza</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600&display=swap');
+
+:root {
+  --red: #C0392B; --yellow: #F5C400; --blue: #1A4E8A;
+  --black: #0D0D0D; --white: #fff; --gray: #F4F4F4;
+  --mid: #666; --green: #27AE60; --orange: #E67E22;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Barlow',sans-serif; background:#0D0D0D; min-height:100vh; }
+
+/* HEADER */
+.app-header {
+  background: var(--blue);
+  padding: 0;
+  position: sticky; top:0; z-index:100;
+  box-shadow: 0 2px 12px rgba(0,0,0,.4);
+}
+.header-stripe { height:4px; background: linear-gradient(90deg, var(--red) 50%, var(--yellow) 50%); }
+.header-inner { padding: 12px 16px; display:flex; align-items:center; gap:10px; }
+.header-title { flex:1; }
+.header-title .h1 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; color:#fff; letter-spacing:1px; line-height:1; }
+.header-title .h2 { font-size:10px; color:rgba(255,255,255,.6); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
+.dmz-pill {
+  background: var(--yellow); color: var(--black);
+  font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:13px;
+  padding:5px 12px; letter-spacing:1px;
+}
+
+/* SCREENS */
+.screen { display:none; padding:16px; max-width:480px; margin:0 auto; }
+.screen.active { display:block; }
+
+/* SETUP SCREEN */
+.setup-card {
+  background:#1a1a1a; border-radius:4px; padding:20px;
+  border-top: 3px solid var(--yellow);
+  margin-bottom:12px;
+}
+.setup-card h3 {
+  font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:800;
+  color:var(--yellow); text-transform:uppercase; letter-spacing:2px; margin-bottom:14px;
+}
+.field-label { font-size:11px; font-weight:600; color:#aaa; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px; }
+.field-input {
+  width:100%; padding:10px 12px; background:#2a2a2a; border:1px solid #333;
+  border-radius:3px; color:#fff; font-family:'Barlow',sans-serif; font-size:14px;
+  margin-bottom:12px; outline:none;
+}
+.field-input:focus { border-color:var(--yellow); }
+.field-input option { background:#2a2a2a; }
+
+.btn-primary {
+  width:100%; padding:14px; background:var(--yellow); color:var(--black);
+  font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:16px;
+  letter-spacing:2px; text-transform:uppercase; border:none; cursor:pointer;
+  border-radius:3px; transition:opacity .2s;
+}
+.btn-primary:active { opacity:.8; }
+.btn-secondary {
+  width:100%; padding:12px; background:transparent; color:#aaa;
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13px;
+  letter-spacing:1px; text-transform:uppercase; border:1px solid #333; cursor:pointer;
+  border-radius:3px; margin-top:8px;
+}
+
+/* CHECKLIST SCREEN */
+.progress-bar-wrap { background:#1a1a1a; padding:10px 16px; position:sticky; top:68px; z-index:90; }
+.progress-label { display:flex; justify-content:space-between; margin-bottom:5px; }
+.progress-label span { font-size:10px; color:#aaa; text-transform:uppercase; letter-spacing:1px; }
+.progress-label strong { font-family:'Barlow Condensed',sans-serif; font-size:14px; color:var(--yellow); }
+.progress-bar { height:4px; background:#333; border-radius:2px; }
+.progress-fill { height:100%; background:var(--yellow); border-radius:2px; transition:width .4s; }
+
+.cat-section { margin-bottom:8px; }
+.cat-header {
+  display:flex; align-items:center; gap:8px;
+  background:#1a1a1a; padding:10px 14px;
+  border-left: 4px solid var(--red);
+  margin-bottom:1px;
+}
+.cat-header .cat-name {
+  font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:800;
+  color:#fff; text-transform:uppercase; letter-spacing:1px; flex:1;
+}
+.cat-header .cat-pts {
+  font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700;
+  color:var(--yellow);
+}
+
+.item-card {
+  background:#1a1a1a; margin-bottom:1px; overflow:hidden;
+  transition: background .2s;
+}
+.item-card.pass { background:#0d2b1a; border-left:3px solid var(--green); }
+.item-card.fail { background:#2b0d0d; border-left:3px solid var(--red); }
+
+.item-top { padding:10px 12px 6px; }
+.item-num { font-family:'Barlow Condensed',sans-serif; font-size:11px; color:var(--yellow); font-weight:700; margin-bottom:3px; }
+.item-text { font-size:13px; font-weight:600; color:#fff; line-height:1.4; }
+.item-sub { font-size:11px; color:#888; margin-top:2px; line-height:1.3; }
+
+.item-actions { display:flex; border-top:1px solid #222; }
+.btn-check {
+  flex:1; padding:10px; border:none; cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:12px;
+  letter-spacing:1px; text-transform:uppercase; transition:all .15s;
+  background:#222; color:#666;
+}
+.btn-check.pass { background:var(--green); color:#fff; }
+.btn-check.fail { background:var(--red); color:#fff; }
+.btn-check:active { opacity:.8; }
+.item-pts {
+  padding:10px 12px; display:flex; align-items:center; justify-content:center;
+  background:#111; min-width:44px;
+}
+.item-pts span {
+  font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:900;
+  color:#444;
+}
+.item-card.pass .item-pts span { color:var(--yellow); }
+.item-card.fail .item-pts span { color:var(--red); }
+
+.obs-field {
+  padding:0 12px 10px; display:none;
+}
+.item-card.fail .obs-field { display:block; }
+.obs-input {
+  width:100%; padding:7px 10px; background:#1f0f0f; border:1px solid var(--red);
+  border-radius:3px; color:#fff; font-size:12px; font-family:'Barlow',sans-serif;
+  outline:none; resize:none;
+}
+
+.score-panel {
+  background:#1a1a1a; border-top:2px solid var(--yellow); padding:12px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; bottom:0;
+}
+.score-label { font-size:10px; color:#aaa; text-transform:uppercase; letter-spacing:1px; }
+.score-value { font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:900; color:var(--yellow); line-height:1; }
+.score-total { font-family:'Barlow Condensed',sans-serif; font-size:16px; color:#555; }
+.btn-submit {
+  padding:12px 20px; background:var(--green); color:#fff;
+  font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:14px;
+  letter-spacing:1px; text-transform:uppercase; border:none; cursor:pointer;
+  border-radius:3px;
+}
+.btn-submit:disabled { background:#333; color:#666; cursor:not-allowed; }
+
+/* RESULT SCREEN */
+.result-card {
+  background:#1a1a1a; border-radius:4px; padding:24px; text-align:center;
+  margin-bottom:12px;
+}
+.result-badge {
+  display:inline-block; padding:8px 20px; border-radius:2px;
+  font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:12px;
+  letter-spacing:3px; text-transform:uppercase; margin-bottom:16px;
+}
+.result-score {
+  font-family:'Barlow Condensed',sans-serif; font-size:72px; font-weight:900;
+  line-height:1;
+}
+.result-of { font-family:'Barlow Condensed',sans-serif; font-size:20px; color:#555; }
+.result-label { font-size:13px; color:#aaa; margin-top:8px; }
+
+.cat-results { background:#1a1a1a; border-radius:4px; overflow:hidden; margin-bottom:12px; }
+.cat-result-row { display:flex; align-items:center; padding:10px 14px; border-bottom:1px solid #222; gap:10px; }
+.cat-result-row:last-child { border-bottom:none; }
+.cat-result-name { flex:1; font-size:12px; font-weight:600; color:#ccc; }
+.cat-result-bar { flex:2; height:6px; background:#333; border-radius:3px; overflow:hidden; }
+.cat-result-fill { height:100%; border-radius:3px; transition:width 1s .5s; }
+.cat-result-pts { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; color:var(--yellow); min-width:50px; text-align:right; }
+
+.toast {
+  position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--green); color:#fff; padding:10px 20px; border-radius:3px;
+  font-weight:700; font-size:13px; opacity:0; transition:all .3s; pointer-events:none; z-index:999;
+  white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.error { background:var(--red); }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-stripe"></div>
+  <div class="header-inner">
+    <div class="header-title">
+      <div class="h1">ORDEN Y LIMPIEZA</div>
+      <div class="h2">Campaña Parada de Planta · Dimarza Sac</div>
+    </div>
+    <div class="dmz-pill" id="headerDmz">DMZ</div>
+  </div>
+</div>
+
+<!-- SCREEN 1: SETUP -->
+<div class="screen active" id="screenSetup">
+  <div style="height:16px"></div>
+  <div class="setup-card">
+    <h3>📋 Datos de la Inspección</h3>
+
+    <div class="field-label">Nombre del Inspector</div>
+    <input class="field-input" id="inspector" type="text" placeholder="Ej: Juan Pérez">
+
+    <div class="field-label">Grupo DMZ</div>
+    <select class="field-input" id="dmzGroup">
+      <option value="">— Seleccionar grupo —</option>
+    </select>
+
+    <div class="field-label">Frente / Área</div>
+    <input class="field-input" id="frente" type="text" placeholder="Ej: Área de Calderas">
+
+    <div class="field-label">Fecha</div>
+    <input class="field-input" id="fecha" type="date">
+  </div>
+
+  <button class="btn-primary" onclick="startChecklist()">INICIAR INSPECCIÓN →</button>
+</div>
+
+<!-- SCREEN 2: CHECKLIST -->
+<div class="screen" id="screenChecklist">
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label">
+      <span>Progreso</span>
+      <strong id="progressText">0 / 13</strong>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div style="height:8px"></div>
+  <div id="checklistContent"></div>
+
+  <div class="score-panel">
+    <div>
+      <div class="score-label">Puntaje actual</div>
+      <div>
+        <span class="score-value" id="currentScore">0</span>
+        <span class="score-total"> / 100</span>
+      </div>
+    </div>
+    <button class="btn-submit" id="btnSubmit" onclick="submitAudit()" disabled>
+      ENVIAR RESULTADO
+    </button>
+  </div>
+</div>
+
+<!-- SCREEN 3: RESULT -->
+<div class="screen" id="screenResult">
+  <div style="height:16px"></div>
+  <div class="result-card" id="resultCard">
+    <div class="result-badge" id="resultBadge"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-of">/ 100 pts</div>
+    <div class="result-label" id="resultLabel"></div>
+  </div>
+
+  <div class="cat-results" id="catResults"></div>
+
+  <button class="btn-primary" onclick="newAudit()" style="margin-bottom:8px">NUEVA INSPECCIÓN</button>
+  <button class="btn-secondary" onclick="showScreen('screenSetup')">CAMBIAR INSPECTOR</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── ITEMS ──
+const CATEGORIES = [
+  {
+    name: '1. HERRAMIENTAS Y EQUIPOS', maxPts: 20,
+    items: [
+      { id:'01', text:'Caja de herramientas con orden interno y herramientas clasificadas', sub:'Cada herramienta en su lugar, sin mezcla de categorías', pts:5 },
+      { id:'02', text:'Herramientas guardadas cuando no están en uso activo', sub:'Sin herramientas sueltas en piso', pts:5 },
+      { id:'03', text:'Pisacables instalados en todas las zonas de tránsito', sub:'Cables eléctricos cubiertos en pasillos activos', pts:5 },
+      { id:'04', text:'Herramientas en buen estado — defectuosas marcadas y segregadas', sub:'Sin desgaste excesivo ni riesgo de falla', pts:5 },
+    ]
+  },
+  {
+    name: '2. RESIDUOS Y DESECHOS', maxPts: 20,
+    items: [
+      { id:'05', text:'Punto temporal de residuos sólidos habilitado y demarcado', sub:'Contenedor señalizado dentro del área DMZ', pts:5 },
+      { id:'06', text:'Residuos clasificados correctamente (org. / inorg. / peligroso)', sub:'Separación en contenedores diferenciados', pts:5 },
+      { id:'07', text:'Sin acumulación de residuos fuera del punto temporal', sub:'Área libre de basura, trapos y embalajes', pts:5 },
+      { id:'08', text:'Derrames de aceite o grasa contenidos', sub:'Kit antiderrame disponible en el frente', pts:5 },
+    ]
+  },
+  {
+    name: '3. SEÑALIZACIÓN Y DEMARCACIÓN', maxPts: 30,
+    items: [
+      { id:'09', text:'Área restringida demarcada con conos y barras rojas, tiene tarjeta de demarcación', sub:'Delimitación de zona de peligro correctamente instalada', pts:10 },
+      { id:'10', text:'Área controlada demarcada con conos y barras amarillas, tiene tarjeta de demarcación', sub:'Delimitación de zona de precaución correctamente instalada', pts:10 },
+      { id:'11', text:'Pasillos y vías de evacuación despejadas', sub:'Sin materiales bloqueando rutas de emergencia', pts:10 },
+    ]
+  },
+  {
+    name: '4. ORDEN GENERAL DEL ÁREA', maxPts: 30,
+    items: [
+      { id:'12', text:'Materiales y repuestos apilados de forma segura y ordenada', sub:'Sin riesgo de caída, separados por tipo', pts:15 },
+      { id:'13', text:'Piso limpio sin obstáculos', sub:'Zona libre de tropiezos y riesgo de resbalones', pts:15 },
+    ]
+  }
+];
+
+// Generate DMZ groups
+const dmzSelect = document.getElementById('dmzGroup');
+for (let i = 1; i <= 30; i++) {
+  const opt = document.createElement('option');
+  opt.value = `DMZ ${String(i).padStart(2,'0')}`;
+  opt.textContent = `DMZ ${String(i).padStart(2,'0')}`;
+  dmzSelect.appendChild(opt);
+}
+
+// Set today's date
+document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+
+// State
+let answers = {}; // itemId -> { pass: bool, obs: string, pts: number }
+let auditMeta = {};
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startChecklist() {
+  const inspector = document.getElementById('inspector').value.trim();
+  const dmz = document.getElementById('dmzGroup').value;
+  const frente = document.getElementById('frente').value.trim();
+  const fecha = document.getElementById('fecha').value;
+  if (!inspector || !dmz || !frente || !fecha) { showToast('Completa todos los campos', true); return; }
+
+  auditMeta = { inspector, dmz, frente, fecha };
+  document.getElementById('headerDmz').textContent = dmz;
+  answers = {};
+  buildChecklist();
+  showScreen('screenChecklist');
+  updateScore();
+}
+
+function buildChecklist() {
+  const container = document.getElementById('checklistContent');
+  container.innerHTML = '';
+
+  CATEGORIES.forEach(cat => {
+    const sec = document.createElement('div');
+    sec.className = 'cat-section';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'cat-header';
+    hdr.innerHTML = `<span class="cat-name">${cat.name}</span><span class="cat-pts">Máx. ${cat.maxPts} pts</span>`;
+    sec.appendChild(hdr);
+
+    cat.items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      card.id = `card-${item.id}`;
+      card.innerHTML = `
+        <div class="item-top">
+          <div class="item-num">ÍTEM ${item.id}</div>
+          <div class="item-text">${item.text}</div>
+          <div class="item-sub">${item.sub}</div>
+        </div>
+        <div class="item-actions">
+          <button class="btn-check" id="pass-${item.id}" onclick="markItem('${item.id}', true, ${item.pts})">✓ CUMPLE</button>
+          <button class="btn-check" id="fail-${item.id}" onclick="markItem('${item.id}', false, 0)">✗ NO CUMPLE</button>
+          <div class="item-pts"><span id="pts-${item.id}">+${item.pts}</span></div>
+        </div>
+        <div class="obs-field">
+          <textarea class="obs-input" id="obs-${item.id}" rows="2" placeholder="Observación (opcional)..."
+            oninput="answers['${item.id}'].obs = this.value"></textarea>
+        </div>`;
+      sec.appendChild(card);
+    });
+
+    container.appendChild(sec);
+  });
+}
+
+function markItem(id, pass, pts) {
+  answers[id] = { pass, pts, obs: answers[id]?.obs || '' };
+  const card = document.getElementById(`card-${id}`);
+  card.className = `item-card ${pass ? 'pass' : 'fail'}`;
+
+  const pBtn = document.getElementById(`pass-${id}`);
+  const fBtn = document.getElementById(`fail-${id}`);
+  pBtn.className = `btn-check ${pass ? 'pass' : ''}`;
+  fBtn.className = `btn-check ${!pass ? 'fail' : ''}`;
+
+  document.getElementById(`pts-${id}`).textContent = pass ? `+${pts}` : '0';
+  updateScore();
+}
+
+function updateScore() {
+  let total = 0;
+  let answered = 0;
+  Object.values(answers).forEach(a => { total += a.pts; answered++; });
+
+  const allItems = CATEGORIES.reduce((acc, c) => acc + c.items.length, 0);
+  document.getElementById('currentScore').textContent = total;
+  document.getElementById('progressText').textContent = `${answered} / ${allItems}`;
+  document.getElementById('progressFill').style.width = `${(answered/allItems)*100}%`;
+
+  const allAnswered = answered === allItems;
+  document.getElementById('btnSubmit').disabled = !allAnswered;
+}
+
+async function submitAudit() {
+  const btn = document.getElementById('btnSubmit');
+  btn.textContent = 'GUARDANDO...';
+  btn.disabled = true;
+
+  let totalScore = 0;
+  const catScores = {};
+  CATEGORIES.forEach(cat => {
+    let cs = 0;
+    cat.items.forEach(item => { if (answers[item.id]?.pass) cs += item.pts; });
+    catScores[cat.name] = { earned: cs, max: cat.maxPts };
+    totalScore += cs;
+  });
+
+  const record = {
+    ...auditMeta,
+    timestamp: new Date().toISOString(),
+    totalScore,
+    catScores,
+    answers
+  };
+
+  try {
+    // Save to shared storage
+    const key = `audit:${auditMeta.dmz.replace(' ','_')}:${Date.now()}`;
+    await window.storage.set(key, JSON.stringify(record), true);
+    showResult(record);
+  } catch(e) {
+    // Fallback: show result anyway
+    showResult(record);
+    showToast('Resultado guardado localmente', false);
+  }
+}
+
+function getRating(score) {
+  if (score >= 90) return { label:'EXCELENTE', color:'#27AE60', msg:'¡Área modelo! Felicitaciones al equipo.' };
+  if (score >= 75) return { label:'BUENO', color:'#2980B9', msg:'Buen desempeño. Mejoras menores pendientes.' };
+  if (score >= 50) return { label:'REGULAR', color:'#F39C12', msg:'Requiere plan de acción correctivo.' };
+  return { label:'DEFICIENTE', color:'#C0392B', msg:'Intervención inmediata requerida.' };
+}
+
+function showResult(record) {
+  const rating = getRating(record.totalScore);
+
+  const badge = document.getElementById('resultBadge');
+  badge.textContent = rating.label;
+  badge.style.background = rating.color;
+  badge.style.color = '#fff';
+
+  const scoreEl = document.getElementById('resultScore');
+  scoreEl.textContent = record.totalScore;
+  scoreEl.style.color = rating.color;
+
+  document.getElementById('resultLabel').textContent = rating.msg;
+
+  // Cat results
+  const catDiv = document.getElementById('catResults');
+  catDiv.innerHTML = '';
+  Object.entries(record.catScores).forEach(([name, data]) => {
+    const pct = (data.earned / data.max) * 100;
+    const color = pct >= 80 ? '#27AE60' : pct >= 60 ? '#F39C12' : '#C0392B';
+    catDiv.innerHTML += `
+      <div class="cat-result-row">
+        <div class="cat-result-name">${name.replace(/^\d+\. /,'')}</div>
+        <div class="cat-result-bar"><div class="cat-result-fill" style="width:${pct}%;background:${color}"></div></div>
+        <div class="cat-result-pts">${data.earned}/${data.max}</div>
+      </div>`;
+  });
+
+  showScreen('screenResult');
+  showToast('✓ Inspección guardada correctamente');
+}
+
+function newAudit() {
+  answers = {};
+  document.getElementById('dmzGroup').value = '';
+  document.getElementById('frente').value = '';
+  document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+  showScreen('screenSetup');
+}
+
+function showToast(msg, error=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${error ? 'error' : ''} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

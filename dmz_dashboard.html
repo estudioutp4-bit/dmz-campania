@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMZ – Dashboard Campaña Orden y Limpieza</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600&display=swap');
+
+:root {
+  --red:#C0392B; --yellow:#F5C400; --blue:#1A4E8A;
+  --black:#0D0D0D; --card:#161616; --card2:#1f1f1f;
+  --white:#fff; --mid:#666; --border:#2a2a2a;
+  --green:#27AE60; --orange:#F39C12; --blue2:#2980B9;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Barlow',sans-serif; background:#0D0D0D; color:#fff; min-height:100vh; }
+
+.header {
+  background:var(--blue); position:sticky; top:0; z-index:100;
+  box-shadow:0 2px 16px rgba(0,0,0,.5);
+}
+.header-stripe { height:4px; background:linear-gradient(90deg,var(--red) 50%,var(--yellow) 50%); }
+.header-inner { padding:14px 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.header-titles h1 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900; letter-spacing:1px; }
+.header-titles p  { font-size:10px; color:rgba(255,255,255,.55); letter-spacing:2px; text-transform:uppercase; }
+.header-actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
+.btn-refresh {
+  padding:8px 16px; background:var(--yellow); color:var(--black);
+  font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:12px;
+  letter-spacing:1px; text-transform:uppercase; border:none; cursor:pointer; border-radius:2px;
+}
+.btn-clear {
+  padding:8px 14px; background:transparent; color:#888;
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px;
+  letter-spacing:1px; text-transform:uppercase; border:1px solid #333; cursor:pointer; border-radius:2px;
+}
+.live-dot { width:8px; height:8px; background:var(--green); border-radius:50%; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.main { max-width:1200px; margin:0 auto; padding:20px 16px; }
+
+/* KPI CARDS */
+.kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:20px; }
+.kpi-card { background:var(--card); border-top:2px solid; padding:14px 16px; border-radius:3px; }
+.kpi-card.yellow { border-color:var(--yellow); }
+.kpi-card.green  { border-color:var(--green); }
+.kpi-card.red    { border-color:var(--red); }
+.kpi-card.blue   { border-color:var(--blue2); }
+.kpi-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#666; margin-bottom:6px; }
+.kpi-value { font-family:'Barlow Condensed',sans-serif; font-size:32px; font-weight:900; line-height:1; }
+.kpi-sub   { font-size:10px; color:#555; margin-top:3px; }
+
+/* GRID LAYOUT */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px; }
+@media(max-width:768px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+
+.panel { background:var(--card); border-radius:3px; overflow:hidden; }
+.panel-header {
+  padding:12px 16px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.panel-header h2 {
+  font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:800;
+  text-transform:uppercase; letter-spacing:2px; color:#fff;
+}
+.panel-header span { font-size:10px; color:#555; }
+.panel-body { padding:14px; }
+
+/* RANKING */
+.rank-item {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 12px; border-bottom:1px solid var(--border);
+  transition:background .2s;
+}
+.rank-item:last-child { border-bottom:none; }
+.rank-item:hover { background:var(--card2); }
+.rank-pos {
+  font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:900;
+  min-width:28px; text-align:center;
+}
+.rank-pos.gold   { color:var(--yellow); }
+.rank-pos.silver { color:#aaa; }
+.rank-pos.bronze { color:#cd7f32; }
+.rank-pos.other  { color:#444; }
+.rank-info { flex:1; }
+.rank-dmz  { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:800; }
+.rank-meta { font-size:10px; color:#666; margin-top:1px; }
+.rank-score {
+  font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900;
+}
+.rank-bar-wrap { flex:2; height:5px; background:#222; border-radius:3px; overflow:hidden; }
+.rank-bar { height:100%; border-radius:3px; }
+
+/* HISTORY TABLE */
+.hist-table { width:100%; border-collapse:collapse; font-size:12px; }
+.hist-table th { padding:7px 10px; background:#111; color:#666; font-size:9px; text-transform:uppercase; letter-spacing:1px; text-align:left; border-bottom:1px solid var(--border); }
+.hist-table td { padding:7px 10px; border-bottom:1px solid var(--border); color:#ccc; }
+.hist-table tr:hover td { background:var(--card2); }
+.score-badge {
+  display:inline-block; padding:2px 8px; border-radius:2px;
+  font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:12px;
+}
+
+/* EMPTY STATE */
+.empty { text-align:center; padding:40px 20px; color:#444; }
+.empty .icon { font-size:40px; margin-bottom:12px; }
+.empty p { font-size:13px; line-height:1.6; }
+
+canvas { max-height:220px; }
+
+.loading { text-align:center; padding:30px; color:#555; font-size:13px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-stripe"></div>
+  <div class="header-inner">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <div class="live-dot"></div>
+        <span style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;">En vivo</span>
+      </div>
+    </div>
+    <div class="header-titles">
+      <h1>DASHBOARD — CAMPAÑA ORDEN Y LIMPIEZA</h1>
+      <p>Dimarza Sac · Parada de Planta · Auditorías en tiempo real</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-clear" onclick="confirmClear()">Limpiar datos</button>
+      <button class="btn-refresh" onclick="loadData()">↻ Actualizar</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div id="loadingMsg" class="loading">Cargando datos...</div>
+  <div id="dashContent" style="display:none">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card yellow">
+        <div class="kpi-label">Inspecciones</div>
+        <div class="kpi-value" id="kpiTotal">0</div>
+        <div class="kpi-sub">registradas</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Promedio General</div>
+        <div class="kpi-value" id="kpiAvg">—</div>
+        <div class="kpi-sub">/ 100 pts</div>
+      </div>
+      <div class="kpi-card yellow">
+        <div class="kpi-label">Puntaje Más Alto</div>
+        <div class="kpi-value" id="kpiMax">—</div>
+        <div class="kpi-sub" id="kpiMaxDmz"></div>
+      </div>
+      <div class="kpi-card red">
+        <div class="kpi-label">Puntaje Más Bajo</div>
+        <div class="kpi-value" id="kpiMin">—</div>
+        <div class="kpi-sub" id="kpiMinDmz"></div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Excelente ≥90</div>
+        <div class="kpi-value" id="kpiExc">0</div>
+        <div class="kpi-sub">grupos</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Grupos Auditados</div>
+        <div class="kpi-value" id="kpiGroups">0</div>
+        <div class="kpi-sub">únicos</div>
+      </div>
+    </div>
+
+    <!-- RANKING + BAR CHART -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>🏆 Ranking por Grupo DMZ</h2>
+          <span id="rankSubtitle">último puntaje</span>
+        </div>
+        <div id="rankingList"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h2>📊 Puntajes por Grupo</h2></div>
+        <div class="panel-body">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIE + LINE -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><h2>🎯 Distribución de Calificaciones</h2></div>
+        <div class="panel-body">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h2>📈 Promedio por Categoría</h2></div>
+        <div class="panel-body">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY TABLE -->
+    <div class="panel" style="margin-bottom:20px">
+      <div class="panel-header">
+        <h2>📋 Historial de Inspecciones</h2>
+        <span id="histCount">0 registros</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="hist-table">
+          <thead>
+            <tr>
+              <th>Fecha</th><th>Grupo DMZ</th><th>Inspector</th>
+              <th>Frente</th><th>Puntaje</th><th>Calificación</th>
+            </tr>
+          </thead>
+          <tbody id="histBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <div id="emptyState" style="display:none" class="empty">
+    <div class="icon">📋</div>
+    <p>No hay inspecciones registradas aún.<br>
+    Comparte la <strong>app de auditoría</strong> con los inspectores<br>para ver los datos aquí.</p>
+  </div>
+</div>
+
+<script>
+let barChartInst, pieChartInst, radarChartInst;
+
+function getRating(s) {
+  if (s >= 90) return { label:'EXCELENTE', color:'#27AE60' };
+  if (s >= 75) return { label:'BUENO',     color:'#2980B9' };
+  if (s >= 50) return { label:'REGULAR',   color:'#F39C12' };
+  return              { label:'DEFICIENTE',color:'#C0392B' };
+}
+
+async function loadData() {
+  document.getElementById('loadingMsg').style.display = 'block';
+  document.getElementById('dashContent').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
+
+  let records = [];
+  try {
+    const result = await window.storage.list('audit:', true);
+    const keys = result?.keys || [];
+    for (const key of keys) {
+      try {
+        const r = await window.storage.get(key, true);
+        if (r?.value) records.push(JSON.parse(r.value));
+      } catch(e) {}
+    }
+  } catch(e) {}
+
+  document.getElementById('loadingMsg').style.display = 'none';
+
+  if (records.length === 0) {
+    document.getElementById('emptyState').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('dashContent').style.display = 'block';
+  renderDashboard(records);
+}
+
+function renderDashboard(records) {
+  // Sort by timestamp desc
+  records.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  // KPIs
+  const scores = records.map(r => r.totalScore);
+  const avg = Math.round(scores.reduce((a,b)=>a+b,0) / scores.length);
+  const maxR = records.reduce((a,b) => b.totalScore > a.totalScore ? b : a);
+  const minR = records.reduce((a,b) => b.totalScore < a.totalScore ? b : a);
+  const uniqueGroups = [...new Set(records.map(r => r.dmz))];
+  const excellent = records.filter(r => r.totalScore >= 90).length;
+
+  document.getElementById('kpiTotal').textContent = records.length;
+  document.getElementById('kpiAvg').textContent = avg;
+  document.getElementById('kpiMax').textContent = maxR.totalScore;
+  document.getElementById('kpiMaxDmz').textContent = maxR.dmz;
+  document.getElementById('kpiMin').textContent = minR.totalScore;
+  document.getElementById('kpiMinDmz').textContent = minR.dmz;
+  document.getElementById('kpiExc').textContent = excellent;
+  document.getElementById('kpiGroups').textContent = uniqueGroups.length;
+
+  // Best score per group for ranking
+  const byGroup = {};
+  records.forEach(r => {
+    if (!byGroup[r.dmz] || r.totalScore > byGroup[r.dmz].totalScore) byGroup[r.dmz] = r;
+  });
+  const grouped = Object.values(byGroup).sort((a,b) => b.totalScore - a.totalScore);
+
+  // Ranking
+  const rankList = document.getElementById('rankingList');
+  rankList.innerHTML = '';
+  grouped.slice(0,15).forEach((r,i) => {
+    const posClass = i===0?'gold':i===1?'silver':i===2?'bronze':'other';
+    const rating = getRating(r.totalScore);
+    const pct = r.totalScore;
+    rankList.innerHTML += `
+      <div class="rank-item">
+        <div class="rank-pos ${posClass}">${i+1}</div>
+        <div class="rank-info">
+          <div class="rank-dmz">${r.dmz}</div>
+          <div class="rank-meta">${r.inspector} · ${r.frente}</div>
+        </div>
+        <div class="rank-bar-wrap">
+          <div class="rank-bar" style="width:${pct}%;background:${rating.color}"></div>
+        </div>
+        <div class="rank-score" style="color:${rating.color}">${r.totalScore}</div>
+      </div>`;
+  });
+
+  // Bar chart
+  const top12 = grouped.slice(0,12);
+  const barColors = top12.map(r => getRating(r.totalScore).color);
+  if (barChartInst) barChartInst.destroy();
+  barChartInst = new Chart(document.getElementById('barChart'), {
+    type:'bar',
+    data: {
+      labels: top12.map(r => r.dmz),
+      datasets: [{ data: top12.map(r => r.totalScore), backgroundColor: barColors, borderRadius:2, borderSkipped:false }]
+    },
+    options: {
+      responsive:true, plugins:{legend:{display:false}},
+      scales: {
+        x: { ticks:{color:'#666',font:{size:9}}, grid:{color:'#1a1a1a'} },
+        y: { min:0, max:100, ticks:{color:'#666',font:{size:9}}, grid:{color:'#222'} }
+      }
+    }
+  });
+
+  // Pie chart - rating distribution
+  const counts = { EXCELENTE:0, BUENO:0, REGULAR:0, DEFICIENTE:0 };
+  records.forEach(r => counts[getRating(r.totalScore).label]++);
+  if (pieChartInst) pieChartInst.destroy();
+  pieChartInst = new Chart(document.getElementById('pieChart'), {
+    type:'doughnut',
+    data: {
+      labels: Object.keys(counts),
+      datasets: [{ data: Object.values(counts), backgroundColor:['#27AE60','#2980B9','#F39C12','#C0392B'], borderWidth:0 }]
+    },
+    options: {
+      responsive:true, cutout:'65%',
+      plugins:{ legend:{ position:'bottom', labels:{color:'#888',font:{size:10},padding:12} } }
+    }
+  });
+
+  // Radar - avg by category
+  const catNames = ['Herramientas', 'Residuos', 'Señalización', 'Orden General'];
+  const catKeys = ['1. HERRAMIENTAS Y EQUIPOS','2. RESIDUOS Y DESECHOS','3. SEÑALIZACIÓN Y DEMARCACIÓN','4. ORDEN GENERAL DEL ÁREA'];
+  const catMaxPts = [20,20,30,30];
+  const catAvgs = catKeys.map((k,i) => {
+    const vals = records.map(r => {
+      const cs = r.catScores?.[k];
+      return cs ? (cs.earned / cs.max) * 100 : 0;
+    });
+    return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  });
+
+  if (radarChartInst) radarChartInst.destroy();
+  radarChartInst = new Chart(document.getElementById('radarChart'), {
+    type:'radar',
+    data: {
+      labels: catNames,
+      datasets:[{
+        label:'Promedio %', data: catAvgs,
+        backgroundColor:'rgba(245,196,0,0.15)', borderColor:'#F5C400',
+        pointBackgroundColor:'#F5C400', pointRadius:4
+      }]
+    },
+    options: {
+      responsive:true,
+      scales:{ r:{ min:0, max:100, ticks:{color:'#555',backdropColor:'transparent',font:{size:9}}, grid:{color:'#222'}, pointLabels:{color:'#aaa',font:{size:10}} } },
+      plugins:{ legend:{display:false} }
+    }
+  });
+
+  // History table
+  const tbody = document.getElementById('histBody');
+  tbody.innerHTML = '';
+  document.getElementById('histCount').textContent = `${records.length} registros`;
+  records.forEach(r => {
+    const rating = getRating(r.totalScore);
+    const d = new Date(r.timestamp);
+    const dateStr = d.toLocaleDateString('es-PE', {day:'2-digit',month:'2-digit',year:'numeric'});
+    tbody.innerHTML += `
+      <tr>
+        <td>${dateStr}</td>
+        <td><strong>${r.dmz}</strong></td>
+        <td>${r.inspector}</td>
+        <td>${r.frente}</td>
+        <td><strong style="color:${rating.color}">${r.totalScore}</strong></td>
+        <td><span class="score-badge" style="background:${rating.color}20;color:${rating.color}">${rating.label}</span></td>
+      </tr>`;
+  });
+}
+
+async function confirmClear() {
+  if (!confirm('¿Eliminar TODOS los registros de auditoría? Esta acción no se puede deshacer.')) return;
+  try {
+    const result = await window.storage.list('audit:', true);
+    const keys = result?.keys || [];
+    for (const key of keys) await window.storage.delete(key, true);
+    loadData();
+  } catch(e) { alert('Error al limpiar datos.'); }
+}
+
+// Auto-refresh every 30s
+loadData();
+setInterval(loadData, 30000);
+</script>
+</body>
+</html>
