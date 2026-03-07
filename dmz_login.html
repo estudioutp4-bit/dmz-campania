@@ -131,9 +131,13 @@ async function doLogin(){
   loadMsg.textContent = 'Verificando...';
 
   try {
-    const res = await fetch(`${API_USUARIOS}?dni=${dni}`);
+    const res = await fetch(API_USUARIOS);
     const users = await res.json();
-    const user = users.find(u => String(u.dni) === String(dni) && u.password === pass && u.activo !== 'NO');
+    const user = users.find(u => 
+      String(u.dni||'').trim() === String(dni).trim() && 
+      String(u.password||'').trim() === String(pass).trim() && 
+      String(u.activo||'SI').trim().toUpperCase() !== 'NO'
+    );
     loadMsg.style.display = 'none';
     if(user){
       sessionStorage.setItem('dmz_auth','true');
