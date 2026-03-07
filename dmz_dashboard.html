@@ -492,7 +492,7 @@ function renderGeneral(rows){
   document.getElementById('kExc').textContent=rows.filter(r=>Number(r.totalScore)>=90).length;
   document.getElementById('kDef').textContent=rows.filter(r=>Number(r.totalScore)<50).length;
   document.getElementById('kGroups').textContent=[...new Set(rows.map(r=>r.dmz))].length;
-  document.getElementById('kPhotos').textContent=rows.reduce((a,r)=>a+Number(r.fotos||0),0);
+  document.getElementById('kPhotos').textContent=rows.reduce((a,r)=>a+getPhotos(r).length,0);
 
   const byGroup={};
   rows.forEach(r=>{if(!byGroup[r.dmz]||Number(r.totalScore)>Number(byGroup[r.dmz].totalScore))byGroup[r.dmz]=r;});
