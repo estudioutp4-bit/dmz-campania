@@ -3,69 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>DMZ – Acceso al Sistema</title>
+<title>DMZ – Acceso</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600&display=swap');
 :root{--red:#C0392B;--yellow:#F5C400;--blue:#1A4E8A;--green:#27AE60;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Barlow',sans-serif;background:#0D0D0D;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
-
-/* animated background */
 .bg{position:fixed;inset:0;overflow:hidden;z-index:0;}
-.bg-stripe{position:absolute;width:200%;height:3px;opacity:.08;animation:slide 8s linear infinite;}
-.bg-stripe:nth-child(1){top:15%;background:var(--yellow);animation-delay:0s;}
-.bg-stripe:nth-child(2){top:35%;background:var(--red);animation-delay:-2s;}
-.bg-stripe:nth-child(3){top:55%;background:var(--yellow);animation-delay:-4s;}
-.bg-stripe:nth-child(4){top:75%;background:var(--red);animation-delay:-6s;}
-@keyframes slide{from{transform:translateX(-50%)}to{transform:translateX(0%)}}
-
-.login-wrap{position:relative;z-index:1;width:100%;max-width:360px;}
-
-.logo-area{text-align:center;margin-bottom:32px;}
-.logo-stripe{display:flex;justify-content:center;gap:3px;margin-bottom:16px;}
-.ls{width:32px;height:6px;border-radius:1px;}
-.logo-title{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:#fff;letter-spacing:3px;line-height:1;}
-.logo-sub{font-size:10px;color:#444;letter-spacing:3px;text-transform:uppercase;margin-top:4px;}
-.logo-badge{display:inline-block;background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:10px;letter-spacing:2px;padding:3px 10px;margin-top:8px;}
-
+.bg-stripe{position:absolute;width:200%;height:3px;opacity:.06;animation:slide 10s linear infinite;}
+.bg-stripe:nth-child(1){top:20%;background:var(--yellow);animation-delay:0s;}
+.bg-stripe:nth-child(2){top:40%;background:var(--red);animation-delay:-3s;}
+.bg-stripe:nth-child(3){top:60%;background:var(--yellow);animation-delay:-6s;}
+.bg-stripe:nth-child(4){top:80%;background:var(--red);animation-delay:-9s;}
+@keyframes slide{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.wrap{position:relative;z-index:1;width:100%;max-width:340px;}
+.logo{text-align:center;margin-bottom:28px;}
+.logo-stripes{display:flex;justify-content:center;gap:3px;margin-bottom:14px;}
+.ls{width:28px;height:5px;border-radius:1px;}
+.logo-title{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:#fff;letter-spacing:3px;}
+.logo-sub{font-size:9px;color:#333;letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
+.logo-badge{display:inline-block;background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:9px;letter-spacing:2px;padding:3px 10px;margin-top:7px;}
 .card{background:#161616;border-radius:4px;overflow:hidden;}
-.card-header{background:var(--blue);padding:16px 20px;border-bottom:3px solid var(--yellow);}
-.card-header h2{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff;letter-spacing:2px;text-transform:uppercase;}
-.card-header p{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;letter-spacing:1px;}
-.card-body{padding:20px;}
-
-.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#0D0D0D;margin-bottom:20px;border-radius:3px;overflow:hidden;}
+.card-hdr{background:var(--blue);padding:14px 18px;border-bottom:3px solid var(--yellow);}
+.card-hdr h2{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;color:#fff;letter-spacing:2px;text-transform:uppercase;}
+.card-hdr p{font-size:9px;color:rgba(255,255,255,.45);margin-top:2px;letter-spacing:1px;}
+.card-body{padding:18px;}
+.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#0D0D0D;margin-bottom:18px;border-radius:3px;overflow:hidden;}
 .role-tab{padding:10px;text-align:center;cursor:pointer;background:#1f1f1f;transition:all .2s;}
 .role-tab.active{background:var(--yellow);}
-.role-tab .ico{font-size:18px;display:block;margin-bottom:3px;}
-.role-tab .lbl{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#666;}
+.role-tab .ico{font-size:16px;display:block;margin-bottom:2px;}
+.role-tab .lbl{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#555;}
 .role-tab.active .lbl{color:var(--blue);}
-
-.flabel{font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px;}
-.finput{width:100%;padding:11px 14px;background:#0D0D0D;border:1px solid #2a2a2a;border-radius:3px;color:#fff;font-family:'Barlow',sans-serif;font-size:14px;margin-bottom:14px;outline:none;transition:border-color .2s;}
+.flabel{font-size:10px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}
+.finput{width:100%;padding:10px 12px;background:#0D0D0D;border:1px solid #2a2a2a;border-radius:3px;color:#fff;font-family:'Barlow',sans-serif;font-size:14px;margin-bottom:12px;outline:none;transition:border-color .2s;}
 .finput:focus{border-color:var(--yellow);}
-
-.btn-login{width:100%;padding:14px;background:var(--yellow);color:#0D0D0D;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;transition:opacity .2s;}
-.btn-login:active{opacity:.8;}
-
-.error-msg{background:#2b0d0d;border:1px solid var(--red);border-radius:3px;padding:8px 12px;font-size:12px;color:#e74c3c;margin-bottom:12px;display:none;}
-
-.hint{text-align:center;margin-top:14px;font-size:10px;color:#333;letter-spacing:1px;}
-
-/* shake animation */
-@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-.shake{animation:shake .4s ease;}
+.btn-login{width:100%;padding:13px;background:var(--yellow);color:#0D0D0D;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;}
+.err{background:#1a0505;border:1px solid var(--red);border-radius:3px;padding:7px 10px;font-size:11px;color:#e74c3c;margin-bottom:10px;display:none;}
+.hint{text-align:center;margin-top:12px;font-size:10px;color:#2a2a2a;letter-spacing:1px;}
+.loading-msg{text-align:center;font-size:11px;color:#555;margin-bottom:10px;display:none;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.shake{animation:shake .35s ease;}
 </style>
 </head>
 <body>
-<div class="bg">
-  <div class="bg-stripe"></div><div class="bg-stripe"></div>
-  <div class="bg-stripe"></div><div class="bg-stripe"></div>
-</div>
-
-<div class="login-wrap">
-  <div class="logo-area">
-    <div class="logo-stripe">
+<div class="bg"><div class="bg-stripe"></div><div class="bg-stripe"></div><div class="bg-stripe"></div><div class="bg-stripe"></div></div>
+<div class="wrap">
+  <div class="logo">
+    <div class="logo-stripes">
       <div class="ls" style="background:var(--red)"></div>
       <div class="ls" style="background:var(--yellow)"></div>
       <div class="ls" style="background:var(--blue)"></div>
@@ -74,73 +58,105 @@ body{font-family:'Barlow',sans-serif;background:#0D0D0D;min-height:100vh;display
     <div class="logo-sub">Sistema de Auditoría</div>
     <div class="logo-badge">CAMPAÑA PARADA DE PLANTA</div>
   </div>
-
   <div class="card">
-    <div class="card-header">
+    <div class="card-hdr">
       <h2>Acceso al Sistema</h2>
-      <p>Selecciona tu rol e ingresa tu contraseña</p>
+      <p>Ingresa tus credenciales para continuar</p>
     </div>
     <div class="card-body">
       <div class="role-tabs">
-        <div class="role-tab active" id="tabAuditor" onclick="setRole('auditor')">
-          <span class="ico">📋</span>
-          <span class="lbl">Inspector</span>
+        <div class="role-tab active" id="tabInspector" onclick="setRole('inspector')">
+          <span class="ico">📋</span><span class="lbl">Inspector</span>
         </div>
         <div class="role-tab" id="tabAdmin" onclick="setRole('admin')">
-          <span class="ico">📊</span>
-          <span class="lbl">Administrador</span>
+          <span class="ico">📊</span><span class="lbl">Administrador</span>
         </div>
       </div>
-
-      <div class="error-msg" id="errMsg">Contraseña incorrecta. Intenta de nuevo.</div>
-
-      <div class="flabel">Contraseña</div>
-      <input class="finput" type="password" id="passInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-
+      <div class="err" id="errMsg">Usuario o contraseña incorrectos.</div>
+      <div class="loading-msg" id="loadMsg">Verificando...</div>
+      <!-- Inspector fields -->
+      <div id="inspectorFields">
+        <div class="flabel">DNI</div>
+        <input class="finput" id="dniInput" type="number" placeholder="Ingresa tu DNI" onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="flabel">Contraseña</div>
+        <input class="finput" id="passInspector" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <!-- Admin fields -->
+      <div id="adminFields" style="display:none">
+        <div class="flabel">Contraseña de Administrador</div>
+        <input class="finput" id="passAdmin" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
       <button class="btn-login" onclick="doLogin()">INGRESAR →</button>
-
-      <div class="hint">¿Olvidaste la contraseña? Contacta al administrador.</div>
+      <div class="hint">¿Problemas para acceder? Contacta al administrador.</div>
     </div>
   </div>
 </div>
-
 <script>
-// ── CONTRASEÑAS — PUEDES CAMBIARLAS AQUÍ ──
-const PASSWORDS = {
-  auditor: 'dmz2024',      // contraseña para inspectores
-  admin:   'dimarza2024'   // contraseña para administrador
-};
+const API_USUARIOS = 'https://api.sheetbest.com/sheets/62c2355a-e3b6-4726-a0d3-343a25a5e41d/tabs/usuarios';
+const ADMIN_PASS = 'dimarza2024';
+let currentRole = 'inspector';
 
-let currentRole = 'auditor';
-
-function setRole(role) {
+function setRole(role){
   currentRole = role;
-  document.getElementById('tabAuditor').classList.toggle('active', role==='auditor');
+  document.getElementById('tabInspector').classList.toggle('active', role==='inspector');
   document.getElementById('tabAdmin').classList.toggle('active', role==='admin');
-  document.getElementById('passInput').value = '';
+  document.getElementById('inspectorFields').style.display = role==='inspector'?'block':'none';
+  document.getElementById('adminFields').style.display = role==='admin'?'block':'none';
   document.getElementById('errMsg').style.display = 'none';
 }
 
-function doLogin() {
-  const pass = document.getElementById('passInput').value;
+async function doLogin(){
   const err = document.getElementById('errMsg');
+  const loadMsg = document.getElementById('loadMsg');
+  err.style.display = 'none';
 
-  if (pass === PASSWORDS[currentRole]) {
-    sessionStorage.setItem('dmz_role', currentRole);
-    sessionStorage.setItem('dmz_auth', 'true');
-    if (currentRole === 'admin') {
+  if(currentRole === 'admin'){
+    const pass = document.getElementById('passAdmin').value;
+    if(pass === ADMIN_PASS){
+      sessionStorage.setItem('dmz_auth','true');
+      sessionStorage.setItem('dmz_role','admin');
       window.location.href = 'dmz_dashboard.html';
     } else {
-      window.location.href = 'dmz_auditoria.html';
+      showError();
     }
-  } else {
-    err.style.display = 'block';
-    const card = document.querySelector('.card');
-    card.classList.remove('shake');
-    void card.offsetWidth;
-    card.classList.add('shake');
-    document.getElementById('passInput').value = '';
+    return;
   }
+
+  // Inspector login
+  const dni = document.getElementById('dniInput').value.trim();
+  const pass = document.getElementById('passInspector').value;
+  if(!dni || !pass){ showError('Ingresa tu DNI y contraseña.'); return; }
+
+  loadMsg.style.display = 'block';
+  loadMsg.textContent = 'Verificando...';
+
+  try {
+    const res = await fetch(`${API_USUARIOS}?dni=${dni}`);
+    const users = await res.json();
+    const user = users.find(u => String(u.dni) === String(dni) && u.password === pass && u.activo !== 'NO');
+    loadMsg.style.display = 'none';
+    if(user){
+      sessionStorage.setItem('dmz_auth','true');
+      sessionStorage.setItem('dmz_role','inspector');
+      sessionStorage.setItem('dmz_nombre', `${user.nombres} ${user.apellidos}`);
+      sessionStorage.setItem('dmz_dni', user.dni);
+      sessionStorage.setItem('dmz_area', user.area || '');
+      window.location.href = 'dmz_auditoria.html';
+    } else {
+      showError('DNI o contraseña incorrectos.');
+    }
+  } catch(e){
+    loadMsg.style.display = 'none';
+    showError('Error de conexión. Verifica tu internet.');
+  }
+}
+
+function showError(msg){
+  const err = document.getElementById('errMsg');
+  err.textContent = msg || 'Usuario o contraseña incorrectos.';
+  err.style.display = 'block';
+  const card = document.querySelector('.card');
+  card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
 }
 </script>
 </body>
