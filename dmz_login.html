@@ -115,6 +115,8 @@ async function doLogin(){
     if(pass === ADMIN_PASS){
       sessionStorage.setItem('dmz_auth','true');
       sessionStorage.setItem('dmz_role','admin');
+      localStorage.setItem('dmz_auth','true');
+      localStorage.setItem('dmz_role','admin');
       window.location.href = 'dmz_dashboard.html';
     } else {
       showError();
@@ -140,12 +142,21 @@ async function doLogin(){
     );
     loadMsg.style.display = 'none';
     if(user){
-      sessionStorage.setItem('dmz_auth','true');
-      sessionStorage.setItem('dmz_role','inspector');
-      sessionStorage.setItem('dmz_nombre', `${user.nombres} ${user.apellidos}`);
-      sessionStorage.setItem('dmz_dni', user.dni);
-      sessionStorage.setItem('dmz_area', user.area || '');
-      window.location.href = 'dmz_auditoria.html';
+      // Guardar en AMBOS para compatibilidad con navegadores móviles
+      const data = {
+        dmz_auth: 'true',
+        dmz_role: 'inspector',
+        dmz_nombre: `${user.nombres} ${user.apellidos}`,
+        dmz_dni: String(user.dni),
+        dmz_area: user.area || ''
+      };
+      Object.entries(data).forEach(([k,v])=>{
+        sessionStorage.setItem(k,v);
+        localStorage.setItem(k,v);
+      });
+      loadMsg.textContent = '✓ Acceso correcto, cargando...';
+      // Pequeño delay para que el storage se guarde antes del redirect
+      setTimeout(()=>{ window.location.href = 'dmz_auditoria.html'; }, 500);
     } else {
       showError('DNI o contraseña incorrectos.');
     }
