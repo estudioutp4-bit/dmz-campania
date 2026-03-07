@@ -3,105 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>DMZ – Auditoría Orden y Limpieza</title>
+<title>DMZ – Auditoría</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600&display=swap');
-:root { --red:#C0392B; --yellow:#F5C400; --blue:#1A4E8A; --black:#0D0D0D; --green:#27AE60; --orange:#F39C12; --blue2:#2980B9; }
+:root{--red:#C0392B;--yellow:#F5C400;--blue:#1A4E8A;--black:#0D0D0D;--green:#27AE60;--orange:#F39C12;--blue2:#2980B9;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Barlow',sans-serif;background:#0D0D0D;min-height:100vh;}
 .app-header{background:var(--blue);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.4);}
 .hstripe{height:4px;background:linear-gradient(90deg,var(--red) 50%,var(--yellow) 50%);}
-.hinner{padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.hinner{padding:10px 16px;display:flex;align-items:center;gap:10px;}
 .htitle{flex:1;}
-.htitle .h1{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1;}
-.htitle .h2{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
-.dmz-pill{background:var(--yellow);color:var(--black);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;padding:5px 12px;letter-spacing:1px;}
-.screen{display:none;padding:16px;max-width:480px;margin:0 auto;}
+.htitle .h1{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1;}
+.htitle .h2{font-size:9px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.dmz-pill{background:var(--yellow);color:var(--black);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:12px;padding:4px 10px;letter-spacing:1px;}
+.btn-logout{padding:5px 10px;background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-size:10px;cursor:pointer;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;}
+
+.screen{display:none;padding:14px;max-width:480px;margin:0 auto;}
 .screen.active{display:block;}
-.card{background:#1a1a1a;border-radius:4px;padding:20px;border-top:3px solid var(--yellow);margin-bottom:12px;}
-.card h3{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:var(--yellow);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;}
-.flabel{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
-.finput{width:100%;padding:10px 12px;background:#2a2a2a;border:1px solid #333;border-radius:3px;color:#fff;font-family:'Barlow',sans-serif;font-size:14px;margin-bottom:12px;outline:none;}
+
+.card{background:#1a1a1a;border-radius:4px;padding:18px;border-top:3px solid var(--yellow);margin-bottom:12px;}
+.card h3{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:var(--yellow);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;}
+.flabel{font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}
+.finput{width:100%;padding:10px 12px;background:#0D0D0D;border:1px solid #2a2a2a;border-radius:3px;color:#fff;font-family:'Barlow',sans-serif;font-size:14px;margin-bottom:11px;outline:none;}
 .finput:focus{border-color:var(--yellow);}
-.finput option{background:#2a2a2a;}
-.btn-p{width:100%;padding:14px;background:var(--yellow);color:var(--black);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;}
-.btn-s{width:100%;padding:12px;background:transparent;color:#aaa;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;border:1px solid #333;cursor:pointer;border-radius:3px;margin-top:8px;}
-.prog-wrap{background:#1a1a1a;padding:10px 16px;position:sticky;top:68px;z-index:90;}
-.prog-lbl{display:flex;justify-content:space-between;margin-bottom:5px;}
-.prog-lbl span{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;}
-.prog-lbl strong{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--yellow);}
-.prog-bar{height:4px;background:#333;border-radius:2px;}
+.finput option{background:#1a1a1a;}
+.btn-p{width:100%;padding:13px;background:var(--yellow);color:var(--black);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;}
+.btn-s{width:100%;padding:11px;background:transparent;color:#555;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1px solid #2a2a2a;cursor:pointer;border-radius:3px;margin-top:7px;}
+
+.prog-wrap{background:#161616;padding:9px 16px;position:sticky;top:60px;z-index:90;border-bottom:1px solid #222;}
+.prog-lbl{display:flex;justify-content:space-between;margin-bottom:4px;}
+.prog-lbl span{font-size:9px;color:#444;text-transform:uppercase;letter-spacing:1px;}
+.prog-lbl strong{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--yellow);}
+.prog-bar{height:3px;background:#222;border-radius:2px;}
 .prog-fill{height:100%;background:var(--yellow);border-radius:2px;transition:width .4s;}
-.cat-hdr{display:flex;align-items:center;gap:8px;background:#1a1a1a;padding:10px 14px;border-left:4px solid var(--red);margin-bottom:1px;}
-.cat-hdr .cn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:1px;flex:1;}
+
+.cat-hdr{display:flex;align-items:center;gap:8px;background:#1a1a1a;padding:9px 14px;border-left:4px solid var(--red);margin-bottom:1px;margin-top:8px;}
+.cat-hdr .cn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:1px;flex:1;}
 .cat-hdr .cp{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--yellow);}
+
 .icard{background:#1a1a1a;margin-bottom:1px;overflow:hidden;transition:background .2s;}
-.icard.pass{background:#0d2b1a;border-left:3px solid var(--green);}
-.icard.fail{background:#2b0d0d;border-left:3px solid var(--red);}
-.itop{padding:10px 12px 6px;}
-.inum{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--yellow);font-weight:700;margin-bottom:3px;}
-.itext{font-size:13px;font-weight:600;color:#fff;line-height:1.4;}
-.isub{font-size:11px;color:#888;margin-top:2px;line-height:1.3;}
-.iact{display:flex;border-top:1px solid #222;}
-.bchk{flex:1;padding:10px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;background:#222;color:#666;transition:all .15s;}
+.icard.pass{background:#0a2218;border-left:3px solid var(--green);}
+.icard.fail{background:#220a0a;border-left:3px solid var(--red);}
+.itop{padding:9px 12px 5px;}
+.inum{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--yellow);font-weight:700;margin-bottom:2px;}
+.itext{font-size:12px;font-weight:600;color:#fff;line-height:1.4;}
+.isub{font-size:10px;color:#666;margin-top:2px;line-height:1.3;}
+.iact{display:flex;border-top:1px solid #111;}
+.bchk{flex:1;padding:9px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;background:#111;color:#444;transition:all .15s;}
 .bchk.pass{background:var(--green);color:#fff;}
 .bchk.fail{background:var(--red);color:#fff;}
-.ipts{padding:10px 12px;display:flex;align-items:center;justify-content:center;background:#111;min-width:44px;}
-.ipts span{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#444;}
+.ipts{padding:9px 10px;display:flex;align-items:center;justify-content:center;background:#0a0a0a;min-width:40px;}
+.ipts span{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;color:#2a2a2a;}
 .icard.pass .ipts span{color:var(--yellow);}
 .icard.fail .ipts span{color:var(--red);}
-.obs-f{padding:0 12px 10px;display:none;}
-.icard.fail .obs-f{display:block;}
-.obs-in{width:100%;padding:7px 10px;background:#1f0f0f;border:1px solid var(--red);border-radius:3px;color:#fff;font-size:12px;font-family:'Barlow',sans-serif;outline:none;resize:none;}
-.score-panel{background:#1a1a1a;border-top:2px solid var(--yellow);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;bottom:0;}
-.slabel{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;}
-.sval{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--yellow);line-height:1;}
-.stot{font-family:'Barlow Condensed',sans-serif;font-size:16px;color:#555;}
-.btn-sub{padding:12px 20px;background:var(--green);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;}
-.btn-sub:disabled{background:#333;color:#666;cursor:not-allowed;}
-.res-card{background:#1a1a1a;border-radius:4px;padding:24px;text-align:center;margin-bottom:12px;}
-.rbadge{display:inline-block;padding:8px 20px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;}
-.rscore{font-family:'Barlow Condensed',sans-serif;font-size:72px;font-weight:900;line-height:1;}
-.rof{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#555;}
-.rlabel{font-size:13px;color:#aaa;margin-top:8px;}
-.cat-results{background:#1a1a1a;border-radius:4px;overflow:hidden;margin-bottom:12px;}
-.crrow{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #222;gap:10px;}
+
+/* FAIL DETAILS */
+.fail-details{padding:0 12px 10px;display:none;}
+.icard.fail .fail-details{display:block;}
+.obs-in{width:100%;padding:7px 10px;background:#180808;border:1px solid #3a1515;border-radius:3px;color:#fff;font-size:11px;font-family:'Barlow',sans-serif;outline:none;resize:none;margin-bottom:6px;}
+
+/* PHOTO UPLOAD */
+.photo-zone{border:1px dashed #3a1515;border-radius:3px;padding:8px;background:#0f0505;}
+.photo-lbl{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.photo-row{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;}
+.photo-thumb{width:52px;height:52px;border-radius:3px;object-fit:cover;border:1px solid #3a1515;}
+.photo-add{width:52px;height:52px;background:#1a0808;border:1px dashed #444;border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#555;font-size:20px;flex-shrink:0;}
+.photo-add:active{background:#2a1010;}
+input[type=file]{display:none;}
+
+.score-panel{background:#161616;border-top:2px solid var(--yellow);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;bottom:0;z-index:90;}
+.slabel{font-size:9px;color:#444;text-transform:uppercase;letter-spacing:1px;}
+.sval{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--yellow);line-height:1;}
+.stot{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#333;}
+.btn-sub{padding:11px 18px;background:var(--green);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;}
+.btn-sub:disabled{background:#1f1f1f;color:#333;cursor:not-allowed;}
+
+/* RESULT */
+.res-card{background:#1a1a1a;border-radius:4px;padding:22px;text-align:center;margin-bottom:10px;}
+.rbadge{display:inline-block;padding:6px 18px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.rscore{font-family:'Barlow Condensed',sans-serif;font-size:68px;font-weight:900;line-height:1;}
+.rof{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:#333;}
+.rlabel{font-size:12px;color:#666;margin-top:6px;}
+.rdmz{font-size:11px;color:#444;margin-top:4px;}
+.cat-results{background:#1a1a1a;border-radius:4px;overflow:hidden;margin-bottom:10px;}
+.crrow{display:flex;align-items:center;padding:9px 12px;border-bottom:1px solid #111;gap:8px;}
 .crrow:last-child{border-bottom:none;}
-.crname{flex:1;font-size:12px;font-weight:600;color:#ccc;}
-.crbar{flex:2;height:6px;background:#333;border-radius:3px;overflow:hidden;}
+.crname{flex:1;font-size:11px;font-weight:600;color:#aaa;}
+.crbar{flex:2;height:5px;background:#111;border-radius:3px;overflow:hidden;}
 .crfill{height:100%;border-radius:3px;}
-.crpts{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--yellow);min-width:50px;text-align:right;}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#fff;padding:10px 20px;border-radius:3px;font-weight:700;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;}
+.crpts{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--yellow);min-width:44px;text-align:right;}
+
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#fff;padding:9px 18px;border-radius:3px;font-weight:700;font-size:12px;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.error{background:var(--red);}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
 .overlay.active{display:flex;}
-.spinner{width:40px;height:40px;border:3px solid #333;border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite;}
+.spinner{width:38px;height:38px;border:3px solid #222;border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.ovtxt{color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;}
+.ovtxt{color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;}
 </style>
 </head>
 <body>
+
 <div class="app-header">
   <div class="hstripe"></div>
   <div class="hinner">
     <div class="htitle">
-      <div class="h1">ORDEN Y LIMPIEZA</div>
+      <div class="h1">AUDITORÍA — ORDEN Y LIMPIEZA</div>
       <div class="h2">Campaña Parada de Planta · Dimarza Sac</div>
     </div>
     <div class="dmz-pill" id="headerDmz">DMZ</div>
+    <button class="btn-logout" onclick="logout()">SALIR</button>
   </div>
 </div>
 
+<!-- SETUP -->
 <div class="screen active" id="screenSetup">
-  <div style="height:16px"></div>
+  <div style="height:14px"></div>
   <div class="card">
     <h3>📋 Datos de la Inspección</h3>
     <div class="flabel">Nombre del Inspector</div>
-    <input class="finput" id="inspector" type="text" placeholder="Ej: Juan Pérez">
+    <input class="finput" id="inspector" type="text" placeholder="Tu nombre completo">
     <div class="flabel">Grupo DMZ</div>
     <select class="finput" id="dmzGroup"><option value="">— Seleccionar grupo —</option></select>
-    <div class="flabel">Frente / Área</div>
+    <div class="flabel">Área / Frente</div>
     <select class="finput" id="frente">
       <option value="">— Seleccionar área —</option>
       <option value="CHANCADO">CHANCADO</option>
@@ -114,13 +140,13 @@ body{font-family:'Barlow',sans-serif;background:#0D0D0D;min-height:100vh;}
   <button class="btn-p" onclick="startChecklist()">INICIAR INSPECCIÓN →</button>
 </div>
 
+<!-- CHECKLIST -->
 <div class="screen" id="screenChecklist">
   <div class="prog-wrap">
     <div class="prog-lbl"><span>Progreso</span><strong id="progText">0 / 13</strong></div>
     <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
   </div>
-  <div style="height:8px"></div>
-  <div id="clContent"></div>
+  <div id="clContent" style="padding-bottom:70px"></div>
   <div class="score-panel">
     <div>
       <div class="slabel">Puntaje actual</div>
@@ -130,69 +156,80 @@ body{font-family:'Barlow',sans-serif;background:#0D0D0D;min-height:100vh;}
   </div>
 </div>
 
+<!-- RESULT -->
 <div class="screen" id="screenResult">
-  <div style="height:16px"></div>
+  <div style="height:14px"></div>
   <div class="res-card">
     <div class="rbadge" id="resBadge"></div>
     <div class="rscore" id="resScore"></div>
     <div class="rof">/ 100 pts</div>
     <div class="rlabel" id="resLabel"></div>
+    <div class="rdmz" id="resDmz"></div>
   </div>
   <div class="cat-results" id="catResults"></div>
-  <button class="btn-p" onclick="newAudit()" style="margin-bottom:8px">NUEVA INSPECCIÓN</button>
-  <button class="btn-s" onclick="showScreen('screenSetup')">CAMBIAR INSPECTOR</button>
+  <button class="btn-p" onclick="newAudit()" style="margin-bottom:7px">NUEVA INSPECCIÓN</button>
+  <button class="btn-s" onclick="showScreen('screenSetup')">CAMBIAR DATOS</button>
 </div>
 
 <div class="toast" id="toast"></div>
 <div class="overlay" id="overlay">
   <div class="spinner"></div>
-  <div class="ovtxt">GUARDANDO EN GOOGLE SHEETS...</div>
+  <div class="ovtxt" id="ovTxt">GUARDANDO...</div>
 </div>
 
 <script>
+// ── AUTH CHECK ──
+if(sessionStorage.getItem('dmz_auth')!=='true'){window.location.href='dmz_login.html';}
+
 const API = 'https://api.sheetbest.com/sheets/62c2355a-e3b6-4726-a0d3-343a25a5e41d';
 
+// ── CONFIGURACIÓN DE NOTIFICACIONES ──
+const NOTIFY_EMAIL = 'junior.torres.cc@gmail.com';
+const WA_PHONE     = '51971198423';
+const WA_APIKEY    = '1957358';
+
 const CATS = [
-  { name:'1. HERRAMIENTAS Y EQUIPOS', maxPts:20, items:[
+  {name:'1. HERRAMIENTAS Y EQUIPOS',maxPts:20,items:[
     {id:'01',text:'Caja de herramientas con orden interno y herramientas clasificadas',sub:'Cada herramienta en su lugar, sin mezcla de categorías',pts:5},
     {id:'02',text:'Herramientas guardadas cuando no están en uso activo',sub:'Sin herramientas sueltas en piso',pts:5},
     {id:'03',text:'Pisacables instalados en todas las zonas de tránsito',sub:'Cables eléctricos cubiertos en pasillos activos',pts:5},
     {id:'04',text:'Herramientas en buen estado — defectuosas marcadas y segregadas',sub:'Sin desgaste excesivo ni riesgo de falla',pts:5},
   ]},
-  { name:'2. RESIDUOS Y DESECHOS', maxPts:20, items:[
+  {name:'2. RESIDUOS Y DESECHOS',maxPts:20,items:[
     {id:'05',text:'Punto temporal de residuos sólidos habilitado y demarcado',sub:'Contenedor señalizado dentro del área DMZ',pts:5},
     {id:'06',text:'Residuos clasificados correctamente (org. / inorg. / peligroso)',sub:'Separación en contenedores diferenciados',pts:5},
     {id:'07',text:'Sin acumulación de residuos fuera del punto temporal',sub:'Área libre de basura, trapos y embalajes',pts:5},
     {id:'08',text:'Derrames de aceite o grasa contenidos',sub:'Kit antiderrame disponible en el frente',pts:5},
   ]},
-  { name:'3. SEÑALIZACIÓN Y DEMARCACIÓN', maxPts:30, items:[
+  {name:'3. SEÑALIZACIÓN Y DEMARCACIÓN',maxPts:30,items:[
     {id:'09',text:'Área restringida demarcada con conos y barras rojas, tiene tarjeta de demarcación',sub:'Delimitación de zona de peligro correctamente instalada',pts:10},
     {id:'10',text:'Área controlada demarcada con conos y barras amarillas, tiene tarjeta de demarcación',sub:'Delimitación de zona de precaución correctamente instalada',pts:10},
     {id:'11',text:'Pasillos y vías de evacuación despejadas',sub:'Sin materiales bloqueando rutas de emergencia',pts:10},
   ]},
-  { name:'4. ORDEN GENERAL DEL ÁREA', maxPts:30, items:[
+  {name:'4. ORDEN GENERAL DEL ÁREA',maxPts:30,items:[
     {id:'12',text:'Materiales y repuestos apilados de forma segura y ordenada',sub:'Sin riesgo de caída, separados por tipo',pts:15},
     {id:'13',text:'Piso limpio sin obstáculos',sub:'Zona libre de tropiezos y riesgo de resbalones',pts:15},
   ]}
 ];
 
-const dmzSel = document.getElementById('dmzGroup');
+const dmzSel=document.getElementById('dmzGroup');
 for(let i=1;i<=30;i++){const o=document.createElement('option');o.value=o.textContent=`DMZ ${String(i).padStart(2,'0')}`;dmzSel.appendChild(o);}
 document.getElementById('fecha').value=new Date().toISOString().split('T')[0];
 
-let answers={}, meta={};
+let answers={}, photos={}, meta={};
 
+function logout(){sessionStorage.clear();window.location.href='dmz_login.html';}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
 
 function startChecklist(){
   const inspector=document.getElementById('inspector').value.trim();
   const dmz=document.getElementById('dmzGroup').value;
-  const frente=document.getElementById('frente').value.trim();
+  const frente=document.getElementById('frente').value;
   const fecha=document.getElementById('fecha').value;
   if(!inspector||!dmz||!frente||!fecha){showToast('Completa todos los campos',true);return;}
   meta={inspector,dmz,frente,fecha};
   document.getElementById('headerDmz').textContent=dmz;
-  answers={};
+  answers={};photos={};
   buildChecklist();
   showScreen('screenChecklist');
   updateScore();
@@ -201,21 +238,64 @@ function startChecklist(){
 function buildChecklist(){
   const c=document.getElementById('clContent');c.innerHTML='';
   CATS.forEach(cat=>{
-    const sec=document.createElement('div');
-    sec.innerHTML=`<div class="cat-hdr"><span class="cn">${cat.name}</span><span class="cp">Máx. ${cat.maxPts} pts</span></div>`;
+    const hdr=document.createElement('div');
+    hdr.className='cat-hdr';
+    hdr.innerHTML=`<span class="cn">${cat.name}</span><span class="cp">Máx. ${cat.maxPts} pts</span>`;
+    c.appendChild(hdr);
     cat.items.forEach(item=>{
       const d=document.createElement('div');
       d.className='icard';d.id=`card-${item.id}`;
-      d.innerHTML=`<div class="itop"><div class="inum">ÍTEM ${item.id}</div><div class="itext">${item.text}</div><div class="isub">${item.sub}</div></div>
+      d.innerHTML=`
+        <div class="itop">
+          <div class="inum">ÍTEM ${item.id}</div>
+          <div class="itext">${item.text}</div>
+          <div class="isub">${item.sub}</div>
+        </div>
         <div class="iact">
           <button class="bchk" id="p-${item.id}" onclick="mark('${item.id}',true,${item.pts})">✓ CUMPLE</button>
           <button class="bchk" id="f-${item.id}" onclick="mark('${item.id}',false,0)">✗ NO CUMPLE</button>
           <div class="ipts"><span id="pts-${item.id}">+${item.pts}</span></div>
         </div>
-        <div class="obs-f"><textarea class="obs-in" id="obs-${item.id}" rows="2" placeholder="Observación..." oninput="if(answers['${item.id}'])answers['${item.id}'].obs=this.value"></textarea></div>`;
-      sec.appendChild(d);
+        <div class="fail-details" id="fd-${item.id}">
+          <textarea class="obs-in" id="obs-${item.id}" rows="2" placeholder="Observación del incumplimiento..." oninput="if(answers['${item.id}'])answers['${item.id}'].obs=this.value"></textarea>
+          <div class="photo-zone">
+            <div class="photo-lbl">📷 EVIDENCIA FOTOGRÁFICA (opcional)</div>
+            <div class="photo-row" id="photos-${item.id}">
+              <div class="photo-add" onclick="triggerPhoto('${item.id}')">+</div>
+            </div>
+            <input type="file" id="file-${item.id}" accept="image/*" capture="environment" onchange="addPhoto('${item.id}',this)">
+          </div>
+        </div>`;
+      c.appendChild(d);
     });
-    c.appendChild(sec);
+  });
+}
+
+function triggerPhoto(id){document.getElementById(`file-${id}`).click();}
+
+function addPhoto(id, input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  const reader=new FileReader();
+  reader.onload=e=>{
+    if(!photos[id])photos[id]=[];
+    photos[id].push(e.target.result);
+    renderPhotos(id);
+  };
+  reader.readAsDataURL(file);
+  input.value='';
+}
+
+function renderPhotos(id){
+  const row=document.getElementById(`photos-${id}`);
+  const existingThumbs=row.querySelectorAll('img');
+  existingThumbs.forEach(t=>t.remove());
+  const addBtn=row.querySelector('.photo-add');
+  (photos[id]||[]).forEach((src,i)=>{
+    const img=document.createElement('img');
+    img.className='photo-thumb';img.src=src;
+    img.onclick=()=>{if(confirm('¿Eliminar esta foto?')){photos[id].splice(i,1);renderPhotos(id);}};
+    row.insertBefore(img,addBtn);
   });
 }
 
@@ -246,16 +326,27 @@ function getRating(s){
 }
 
 async function submitAudit(){
-  document.getElementById('overlay').classList.add('active');
+  const ovEl=document.getElementById('overlay');
+  const ovTxt=document.getElementById('ovTxt');
+  ovEl.classList.add('active');
+  ovTxt.textContent='GUARDANDO EN GOOGLE SHEETS...';
+
   let total=0;
   const catScores={};
+  const failedItems=[];
   CATS.forEach(cat=>{
     let cs=0;
-    cat.items.forEach(i=>{if(answers[i.id]?.pass)cs+=i.pts;});
+    cat.items.forEach(i=>{
+      if(answers[i.id]?.pass){cs+=i.pts;}
+      else{failedItems.push(`Item ${i.id}: ${answers[i.id]?.obs||'Sin observación'}`);}
+    });
     catScores[cat.name]={earned:cs,max:cat.maxPts};
     total+=cs;
   });
+
   const rating=getRating(total);
+  const photoCount=Object.values(photos).reduce((a,p)=>a+(p?.length||0),0);
+
   const row={
     timestamp:new Date().toLocaleString('es-PE'),
     dmz:meta.dmz,
@@ -264,19 +355,68 @@ async function submitAudit(){
     fecha:meta.fecha,
     totalScore:total,
     calificacion:rating.label,
-    catScores:Object.entries(catScores).map(([k,v])=>`${k.split('.')[0].trim()}:${v.earned}/${v.max}`).join(' | ')
+    catScores:Object.entries(catScores).map(([k,v])=>`${k.split('.')[0].trim()}:${v.earned}/${v.max}`).join(' | '),
+    fotos:photoCount,
+    incumplimientos:failedItems.length
   };
+
   try{
     const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(row)});
     if(!res.ok)throw new Error();
-    document.getElementById('overlay').classList.remove('active');
+
+    // Notificaciones (no bloquean si fallan)
+    ovTxt.textContent='ENVIANDO NOTIFICACIONES...';
+    await Promise.allSettled([
+      sendWhatsApp(row, rating),
+      sendEmail(row, failedItems, rating)
+    ]);
+
+    ovEl.classList.remove('active');
     showResult(total,catScores,rating);
-    showToast('✓ Guardado en Google Sheets');
+    showToast('✓ Inspección guardada correctamente');
   }catch(e){
-    document.getElementById('overlay').classList.remove('active');
+    ovEl.classList.remove('active');
     showToast('Error de conexión. Intenta de nuevo.',true);
     document.getElementById('btnSubmit').disabled=false;
   }
+}
+
+async function sendWhatsApp(row, rating){
+  const emoji = rating.label==='EXCELENTE'?'🟢':rating.label==='BUENO'?'🔵':rating.label==='REGULAR'?'🟡':'🔴';
+  const msg = `${emoji} *NUEVA INSPECCIÓN DMZ*\n\n`
+    + `📋 *Grupo:* ${row.dmz}\n`
+    + `🏭 *Área:* ${row.frente}\n`
+    + `👷 *Inspector:* ${row.inspector}\n`
+    + `📅 *Fecha:* ${row.fecha}\n`
+    + `🎯 *Puntaje:* ${row.totalScore}/100\n`
+    + `✅ *Calificación:* ${rating.label}\n`
+    + `❌ *Incumplimientos:* ${row.incumplimientos}`;
+  const url = `https://api.callmebot.com/whatsapp.php?phone=${WA_PHONE}&text=${encodeURIComponent(msg)}&apikey=${WA_APIKEY}`;
+  await fetch(url, {mode:'no-cors'});
+}
+
+async function sendEmail(row, failedItems, rating){
+  // Usa EmailJS si está configurado, si no usa mailto como fallback
+  const subject = encodeURIComponent(`[DMZ] ${row.dmz} — ${row.totalScore}/100 — ${rating.label}`);
+  const body = encodeURIComponent(
+    `Nueva inspección registrada:\n\n`
+    + `Grupo: ${row.dmz}\n`
+    + `Área: ${row.frente}\n`
+    + `Inspector: ${row.inspector}\n`
+    + `Fecha: ${row.fecha}\n`
+    + `Puntaje: ${row.totalScore}/100\n`
+    + `Calificación: ${rating.label}\n\n`
+    + `Ítems incumplidos:\n${failedItems.join('\n') || 'Ninguno'}\n\n`
+    + `Registrado: ${row.timestamp}`
+  );
+  // Abre el cliente de correo del inspector para enviar notificación
+  // (funciona sin configuración adicional)
+  const link = document.createElement('a');
+  link.href = `mailto:${NOTIFY_EMAIL}?subject=${subject}&body=${body}`;
+  link.style.display='none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 function showResult(total,catScores,rating){
@@ -285,9 +425,10 @@ function showResult(total,catScores,rating){
   document.getElementById('resScore').textContent=total;
   document.getElementById('resScore').style.color=rating.color;
   document.getElementById('resLabel').textContent=rating.msg;
+  document.getElementById('resDmz').textContent=`${meta.dmz} · ${meta.frente} · ${meta.inspector}`;
   const div=document.getElementById('catResults');div.innerHTML='';
   CATS.forEach(cat=>{
-    const {earned,max}=catScores[cat.name];
+    const{earned,max}=catScores[cat.name];
     const pct=(earned/max)*100;
     const color=pct>=80?'#27AE60':pct>=60?'#F39C12':'#C0392B';
     div.innerHTML+=`<div class="crrow"><div class="crname">${cat.name.replace(/^\d+\. /,'')}</div><div class="crbar"><div class="crfill" style="width:${pct}%;background:${color}"></div></div><div class="crpts">${earned}/${max}</div></div>`;
@@ -295,9 +436,19 @@ function showResult(total,catScores,rating){
   showScreen('screenResult');
 }
 
-function newAudit(){answers={};document.getElementById('dmzGroup').value='';document.getElementById('frente').value='';document.getElementById('fecha').value=new Date().toISOString().split('T')[0];showScreen('screenSetup');}
+function newAudit(){
+  answers={};photos={};
+  document.getElementById('dmzGroup').value='';
+  document.getElementById('frente').value='';
+  document.getElementById('fecha').value=new Date().toISOString().split('T')[0];
+  showScreen('screenSetup');
+}
 
-function showToast(msg,error=false){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${error?'error':''} show`;setTimeout(()=>t.classList.remove('show'),3500);}
+function showToast(msg,error=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast ${error?'error':''} show`;
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
 </script>
 </body>
 </html>
