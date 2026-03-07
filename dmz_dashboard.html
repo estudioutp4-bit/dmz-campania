@@ -3,96 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DMZ – Dashboard Campaña</title>
+<title>DMZ – Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600&display=swap');
-:root{--red:#C0392B;--yellow:#F5C400;--blue:#1A4E8A;--black:#0D0D0D;--card:#161616;--card2:#1f1f1f;--border:#2a2a2a;--green:#27AE60;--orange:#F39C12;--blue2:#2980B9;}
+:root{--red:#C0392B;--yellow:#F5C400;--blue:#1A4E8A;--black:#0D0D0D;--card:#141414;--card2:#1c1c1c;--border:#222;--green:#27AE60;--orange:#F39C12;--blue2:#2980B9;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Barlow',sans-serif;background:#0D0D0D;color:#fff;min-height:100vh;}
-.header{background:var(--blue);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.5);}
+
+/* HEADER */
+.header{background:var(--blue);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.6);}
 .hstripe{height:4px;background:linear-gradient(90deg,var(--red) 50%,var(--yellow) 50%);}
-.hinner{padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-.htitles h1{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:1px;}
-.htitles p{font-size:9px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;}
-.hacts{margin-left:auto;display:flex;gap:8px;align-items:center;}
-.btn-ref{padding:8px 14px;background:var(--yellow);color:var(--black);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:11px;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;}
-.live{display:flex;align-items:center;gap:6px;font-size:9px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;}
-.ldot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+.hinner{padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.htitles h1{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:1px;}
+.htitles p{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;}
+.hacts{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.btn-hdr{padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:10px;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;}
+.btn-yellow{background:var(--yellow);color:var(--black);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-outline{background:transparent;color:#666;border:1px solid #333;}
+.live{display:flex;align-items:center;gap:5px;font-size:8px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase;}
+.ldot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
-.main{max-width:1100px;margin:0 auto;padding:16px;}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px;}
-.kpi{background:var(--card);border-top:2px solid;padding:12px 14px;border-radius:3px;}
-.kpi.y{border-color:var(--yellow)}.kpi.g{border-color:var(--green)}.kpi.r{border-color:var(--red)}.kpi.b{border-color:var(--blue2)}
-.klbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#555;margin-bottom:5px;}
-.kval{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;line-height:1;}
-.ksub{font-size:9px;color:#444;margin-top:2px;}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
-@media(max-width:700px){.g2,.g3{grid-template-columns:1fr;}}
+
+/* FILTER BAR */
+.filter-bar{background:#111;padding:8px 20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border);}
+.filter-bar label{font-size:9px;color:#444;text-transform:uppercase;letter-spacing:1px;}
+.fsel{padding:6px 10px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:2px;color:#ccc;font-family:'Barlow',sans-serif;font-size:12px;outline:none;cursor:pointer;}
+.fsel:focus{border-color:var(--yellow);}
+.filter-count{margin-left:auto;font-size:10px;color:#444;}
+.filter-count strong{color:var(--yellow);}
+
+.main{max-width:1200px;margin:0 auto;padding:14px 16px;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px;}
+.kpi{background:var(--card);border-top:2px solid;padding:11px 13px;border-radius:3px;position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;right:-8px;top:-8px;width:40px;height:40px;border-radius:50%;opacity:.06;}
+.kpi.y{border-color:var(--yellow)}.kpi.y::after{background:var(--yellow)}
+.kpi.g{border-color:var(--green)}.kpi.g::after{background:var(--green)}
+.kpi.r{border-color:var(--red)}.kpi.r::after{background:var(--red)}
+.kpi.b{border-color:var(--blue2)}.kpi.b::after{background:var(--blue2)}
+.kpi.o{border-color:var(--orange)}.kpi.o::after{background:var(--orange)}
+.klbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#444;margin-bottom:4px;}
+.kval{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;line-height:1;}
+.ksub{font-size:9px;color:#333;margin-top:2px;}
+
+/* PANELS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+@media(max-width:750px){.g2,.g3{grid-template-columns:1fr;}}
 .panel{background:var(--card);border-radius:3px;overflow:hidden;}
-.phdr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.phdr h2{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;}
-.phdr span{font-size:9px;color:#444;}
-.pbody{padding:12px;}
-.rank-item{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border);}
+.phdr{padding:9px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.phdr h2{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;}
+.phdr span{font-size:9px;color:#333;}
+.pbody{padding:11px;}
+canvas{max-height:190px;}
+
+/* RANKING */
+.rank-item{display:flex;align-items:center;gap:7px;padding:7px 12px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;}
+.rank-item:hover{background:var(--card2);}
 .rank-item:last-child{border-bottom:none;}
-.rpos{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;min-width:24px;text-align:center;}
-.rpos.gold{color:var(--yellow)}.rpos.silver{color:#aaa}.rpos.bronze{color:#cd7f32}.rpos.other{color:#333}
-.rinfo{flex:1;}
-.rdmz{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;}
-.rmeta{font-size:9px;color:#555;margin-top:1px;}
-.rbar{flex:2;height:5px;background:#222;border-radius:3px;overflow:hidden;}
-.rbarfill{height:100%;border-radius:3px;}
-.rscore{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;}
+.rpos{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;min-width:22px;text-align:center;}
+.rpos.gold{color:var(--yellow)}.rpos.silver{color:#888}.rpos.bronze{color:#b87333}.rpos.other{color:#2a2a2a}
+.medal{font-size:14px;min-width:18px;}
+.rinfo{flex:1;min-width:0;}
+.rdmz{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;}
+.rmeta{font-size:9px;color:#444;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rbar-wrap{flex:2;height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;}
+.rbar-fill{height:100%;border-radius:2px;transition:width 1s .3s;}
+.rscore{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;min-width:32px;text-align:right;}
+
+/* HISTORY */
+.hist-wrap{overflow-x:auto;}
 .htable{width:100%;border-collapse:collapse;font-size:11px;}
-.htable th{padding:6px 10px;background:#111;color:#555;font-size:8px;text-transform:uppercase;letter-spacing:1px;text-align:left;border-bottom:1px solid var(--border);}
-.htable td{padding:6px 10px;border-bottom:1px solid var(--border);color:#ccc;}
+.htable th{padding:6px 10px;background:#0a0a0a;color:#444;font-size:8px;text-transform:uppercase;letter-spacing:1px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.htable td{padding:6px 10px;border-bottom:1px solid var(--border);color:#bbb;white-space:nowrap;}
 .htable tr:hover td{background:var(--card2);}
-.sbadge{display:inline-block;padding:2px 7px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;}
-.empty{text-align:center;padding:50px 20px;color:#333;}
-.empty .ico{font-size:48px;margin-bottom:14px;}
-.empty p{font-size:13px;line-height:1.8;color:#444;}
-.loading{text-align:center;padding:60px 20px;color:#444;}
-.spin{width:36px;height:36px;border:3px solid #222;border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+.sbadge{display:inline-block;padding:1px 7px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:10px;}
+
+/* DMZ DETAIL MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.active{display:flex;}
+.modal{background:#161616;border-radius:4px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;border-top:3px solid var(--yellow);}
+.modal-hdr{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#161616;}
+.modal-hdr h3{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;letter-spacing:1px;}
+.modal-close{background:none;border:none;color:#555;font-size:20px;cursor:pointer;padding:0 4px;}
+.modal-body{padding:14px;}
+.modal-stat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+.modal-stat:last-child{border-bottom:none;}
+.modal-stat .ms-label{font-size:11px;color:#555;}
+.modal-stat .ms-val{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;}
+.hist-mini{margin-top:12px;}
+.hist-mini-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;color:#444;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+.hist-mini-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #111;}
+.hist-mini-row:last-child{border-bottom:none;}
+
+.empty{text-align:center;padding:50px 20px;}
+.empty .ico{font-size:44px;margin-bottom:12px;}
+.empty p{font-size:12px;color:#333;line-height:1.8;}
+.loading{text-align:center;padding:60px;}
+.spin{width:34px;height:34px;border:3px solid #1a1a1a;border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-canvas{max-height:200px;}
+.lmsg{font-size:12px;color:#333;}
+
+/* trend arrow */
+.trend-up{color:var(--green);font-size:10px;}
+.trend-dn{color:var(--red);font-size:10px;}
 </style>
 </head>
 <body>
+
 <div class="header">
   <div class="hstripe"></div>
   <div class="hinner">
     <div class="live"><div class="ldot"></div>En vivo</div>
     <div class="htitles">
       <h1>DASHBOARD — CAMPAÑA ORDEN Y LIMPIEZA</h1>
-      <p>Dimarza Sac · Parada de Planta · Datos desde Google Sheets</p>
+      <p>Dimarza Sac · Parada de Planta</p>
     </div>
     <div class="hacts">
-      <button class="btn-ref" onclick="loadData()">↻ Actualizar</button>
+      <button class="btn-hdr btn-green" onclick="exportExcel()">⬇ Excel</button>
+      <button class="btn-hdr btn-yellow" onclick="exportPDF()">⬇ PDF</button>
+      <button class="btn-hdr btn-yellow" onclick="loadData()">↻ Actualizar</button>
+      <button class="btn-hdr btn-outline" onclick="logout()">SALIR</button>
     </div>
   </div>
 </div>
 
-<div class="main">
-  <div id="loadingDiv" class="loading">
+<div class="filter-bar">
+  <label>Filtrar por:</label>
+  <select class="fsel" id="filtArea" onchange="applyFilter()">
+    <option value="">Todas las áreas</option>
+    <option>CHANCADO</option><option>MOLIENDA</option><option>PEBLES</option>
+  </select>
+  <select class="fsel" id="filtDmz" onchange="applyFilter()">
+    <option value="">Todos los grupos</option>
+  </select>
+  <select class="fsel" id="filtRating" onchange="applyFilter()">
+    <option value="">Todas las calificaciones</option>
+    <option>EXCELENTE</option><option>BUENO</option><option>REGULAR</option><option>DEFICIENTE</option>
+  </select>
+  <div class="filter-count">Mostrando <strong id="filtCount">0</strong> registros</div>
+</div>
+
+<div class="main" id="mainDiv">
+  <div class="loading" id="loadDiv">
     <div class="spin"></div>
-    <div>Cargando datos desde Google Sheets...</div>
+    <div class="lmsg">Cargando datos desde Google Sheets...</div>
   </div>
 
-  <div id="mainContent" style="display:none">
+  <div id="dashDiv" style="display:none">
+    <!-- KPIs -->
     <div class="kpi-grid">
       <div class="kpi y"><div class="klbl">Inspecciones</div><div class="kval" id="kTotal">0</div><div class="ksub">registradas</div></div>
-      <div class="kpi g"><div class="klbl">Promedio General</div><div class="kval" id="kAvg">—</div><div class="ksub">/ 100 pts</div></div>
+      <div class="kpi g"><div class="klbl">Promedio</div><div class="kval" id="kAvg">—</div><div class="ksub">/ 100 pts</div></div>
       <div class="kpi y"><div class="klbl">Puntaje Más Alto</div><div class="kval" id="kMax">—</div><div class="ksub" id="kMaxDmz"></div></div>
       <div class="kpi r"><div class="klbl">Puntaje Más Bajo</div><div class="kval" id="kMin">—</div><div class="ksub" id="kMinDmz"></div></div>
       <div class="kpi g"><div class="klbl">Excelente ≥90</div><div class="kval" id="kExc">0</div><div class="ksub">grupos</div></div>
+      <div class="kpi r"><div class="klbl">Deficiente &lt;50</div><div class="kval" id="kDef">0</div><div class="ksub">grupos</div></div>
       <div class="kpi b"><div class="klbl">Grupos Auditados</div><div class="kval" id="kGroups">0</div><div class="ksub">únicos</div></div>
+      <div class="kpi o"><div class="klbl">Fotos Tomadas</div><div class="kval" id="kPhotos">0</div><div class="ksub">evidencias</div></div>
     </div>
 
+    <!-- RANKING + BAR -->
     <div class="g2">
       <div class="panel">
-        <div class="phdr"><h2>🏆 Ranking por Grupo DMZ</h2><span>mejor puntaje por grupo</span></div>
+        <div class="phdr"><h2>🏆 Ranking General</h2><span>clic en un grupo para ver historial</span></div>
         <div id="rankList"></div>
       </div>
       <div class="panel">
@@ -101,22 +179,47 @@ canvas{max-height:200px;}
       </div>
     </div>
 
-    <div class="g2">
+    <!-- PIE + RADAR + LINE -->
+    <div class="g3">
       <div class="panel">
-        <div class="phdr"><h2>🎯 Distribución de Calificaciones</h2></div>
+        <div class="phdr"><h2>🎯 Calificaciones</h2></div>
         <div class="pbody"><canvas id="pieChart"></canvas></div>
       </div>
       <div class="panel">
         <div class="phdr"><h2>📈 Promedio por Categoría</h2></div>
         <div class="pbody"><canvas id="radarChart"></canvas></div>
       </div>
+      <div class="panel">
+        <div class="phdr"><h2>📉 Evolución de Puntajes</h2></div>
+        <div class="pbody"><canvas id="lineChart"></canvas></div>
+      </div>
     </div>
 
+    <!-- POR ÁREA -->
+    <div class="g3" id="areaGrid">
+      <div class="panel">
+        <div class="phdr"><h2>⚙️ CHANCADO</h2><span id="aChancado">—</span></div>
+        <div class="pbody"><canvas id="barChancado"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="phdr"><h2>⚙️ MOLIENDA</h2><span id="aMolienda">—</span></div>
+        <div class="pbody"><canvas id="barMolienda"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="phdr"><h2>⚙️ PEBLES</h2><span id="aPebles">—</span></div>
+        <div class="pbody"><canvas id="barPebles"></canvas></div>
+      </div>
+    </div>
+
+    <!-- HISTORY TABLE -->
     <div class="panel" style="margin-bottom:20px">
       <div class="phdr"><h2>📋 Historial de Inspecciones</h2><span id="histCount"></span></div>
-      <div style="overflow-x:auto">
+      <div class="hist-wrap">
         <table class="htable">
-          <thead><tr><th>Fecha</th><th>Grupo DMZ</th><th>Inspector</th><th>Frente</th><th>Puntaje</th><th>Calificación</th><th>Categorías</th></tr></thead>
+          <thead><tr>
+            <th>Fecha/Hora</th><th>Grupo DMZ</th><th>Área</th><th>Inspector</th>
+            <th>Puntaje</th><th>Calificación</th><th>Fotos</th><th>Incumplimientos</th><th>Categorías</th>
+          </tr></thead>
           <tbody id="histBody"></tbody>
         </table>
       </div>
@@ -125,13 +228,32 @@ canvas{max-height:200px;}
 
   <div id="emptyDiv" style="display:none" class="empty">
     <div class="ico">📋</div>
-    <p>No hay inspecciones registradas aún.<br>Comparte la <strong>app de auditoría</strong> con los inspectores.<br>Los datos aparecerán aquí automáticamente.</p>
+    <p>No hay inspecciones registradas aún.<br>Comparte la app de auditoría con los inspectores.</p>
+  </div>
+</div>
+
+<!-- DMZ DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="modalTitle">DMZ 01 — Historial</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
 
 <script>
-const API = 'https://api.sheetbest.com/sheets/62c2355a-e3b6-4726-a0d3-343a25a5e41d';
-let barC, pieC, radC;
+// ── AUTH CHECK ──
+if(sessionStorage.getItem('dmz_auth')!=='true'||sessionStorage.getItem('dmz_role')!=='admin'){
+  window.location.href='dmz_login.html';
+}
+
+const API='https://api.sheetbest.com/sheets/62c2355a-e3b6-4726-a0d3-343a25a5e41d';
+let allRows=[], filteredRows=[];
+let charts={};
+
+function logout(){sessionStorage.clear();window.location.href='dmz_login.html';}
 
 function getRating(s){
   s=Number(s);
@@ -141,131 +263,266 @@ function getRating(s){
   return{label:'DEFICIENTE',color:'#C0392B'};
 }
 
-async function loadData(){
-  document.getElementById('loadingDiv').style.display='block';
-  document.getElementById('mainContent').style.display='none';
-  document.getElementById('emptyDiv').style.display='none';
+function destroyChart(key){if(charts[key]){charts[key].destroy();delete charts[key];}}
 
-  let rows=[];
+async function loadData(){
+  document.getElementById('loadDiv').style.display='block';
+  document.getElementById('dashDiv').style.display='none';
+  document.getElementById('emptyDiv').style.display='none';
   try{
     const res=await fetch(API);
-    rows=await res.json();
-    // Filter out empty rows
-    rows=rows.filter(r=>r.dmz&&r.totalScore!==''&&r.totalScore!==undefined);
+    const rows=await res.json();
+    allRows=rows.filter(r=>r.dmz&&r.totalScore!==''&&r.totalScore!==undefined);
+    allRows.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    populateDmzFilter();
+    applyFilter();
   }catch(e){
-    document.getElementById('loadingDiv').innerHTML='<p style="color:#C0392B">Error al conectar con Google Sheets. Verifica tu conexión.</p>';
+    document.getElementById('loadDiv').innerHTML='<p style="color:var(--red);text-align:center;padding:40px">Error al conectar con Google Sheets.</p>';
+  }
+}
+
+function populateDmzFilter(){
+  const sel=document.getElementById('filtDmz');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Todos los grupos</option>';
+  const uniq=[...new Set(allRows.map(r=>r.dmz))].sort();
+  uniq.forEach(d=>{const o=document.createElement('option');o.value=o.textContent=d;sel.appendChild(o);});
+  sel.value=cur;
+}
+
+function applyFilter(){
+  const area=document.getElementById('filtArea').value;
+  const dmz=document.getElementById('filtDmz').value;
+  const rating=document.getElementById('filtRating').value;
+  filteredRows=allRows.filter(r=>{
+    if(area&&r.frente!==area)return false;
+    if(dmz&&r.dmz!==dmz)return false;
+    if(rating&&r.calificacion!==rating)return false;
+    return true;
+  });
+  document.getElementById('filtCount').textContent=filteredRows.length;
+  if(!filteredRows.length&&allRows.length){
+    document.getElementById('loadDiv').style.display='none';
+    document.getElementById('dashDiv').style.display='none';
+    document.getElementById('emptyDiv').style.display='block';
+    document.querySelector('#emptyDiv p').innerHTML='No hay registros con ese filtro.<br>Prueba cambiando los filtros.';
     return;
   }
-
-  document.getElementById('loadingDiv').style.display='none';
-  if(!rows.length){document.getElementById('emptyDiv').style.display='block';return;}
-  document.getElementById('mainContent').style.display='block';
-  render(rows);
+  if(!filteredRows.length){
+    document.getElementById('loadDiv').style.display='none';
+    document.getElementById('emptyDiv').style.display='block';
+    return;
+  }
+  document.getElementById('loadDiv').style.display='none';
+  document.getElementById('dashDiv').style.display='block';
+  document.getElementById('emptyDiv').style.display='none';
+  render(filteredRows);
 }
 
 function render(rows){
-  // Sort newest first
-  rows.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
-
   const scores=rows.map(r=>Number(r.totalScore));
   const avg=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
   const maxR=rows.reduce((a,b)=>Number(b.totalScore)>Number(a.totalScore)?b:a);
   const minR=rows.reduce((a,b)=>Number(b.totalScore)<Number(a.totalScore)?b:a);
   const uniq=[...new Set(rows.map(r=>r.dmz))];
   const exc=rows.filter(r=>Number(r.totalScore)>=90).length;
+  const def=rows.filter(r=>Number(r.totalScore)<50).length;
+  const photos=rows.reduce((a,r)=>a+Number(r.fotos||0),0);
 
   document.getElementById('kTotal').textContent=rows.length;
   document.getElementById('kAvg').textContent=avg;
-  document.getElementById('kMax').textContent=maxR.totalScore;
-  document.getElementById('kMaxDmz').textContent=maxR.dmz;
-  document.getElementById('kMin').textContent=minR.totalScore;
-  document.getElementById('kMinDmz').textContent=minR.dmz;
+  document.getElementById('kMax').textContent=maxR.totalScore;document.getElementById('kMaxDmz').textContent=maxR.dmz;
+  document.getElementById('kMin').textContent=minR.totalScore;document.getElementById('kMinDmz').textContent=minR.dmz;
   document.getElementById('kExc').textContent=exc;
+  document.getElementById('kDef').textContent=def;
   document.getElementById('kGroups').textContent=uniq.length;
+  document.getElementById('kPhotos').textContent=photos;
 
   // Best per group
   const byGroup={};
-  rows.forEach(r=>{
-    if(!byGroup[r.dmz]||Number(r.totalScore)>Number(byGroup[r.dmz].totalScore))byGroup[r.dmz]=r;
-  });
+  rows.forEach(r=>{if(!byGroup[r.dmz]||Number(r.totalScore)>Number(byGroup[r.dmz].totalScore))byGroup[r.dmz]=r;});
   const grouped=Object.values(byGroup).sort((a,b)=>Number(b.totalScore)-Number(a.totalScore));
 
-  // Ranking
+  // RANKING
   const rl=document.getElementById('rankList');rl.innerHTML='';
-  grouped.slice(0,15).forEach((r,i)=>{
-    const pc=['gold','silver','bronze'][i]||'other';
+  const medals=['🥇','🥈','🥉'];
+  grouped.slice(0,20).forEach((r,i)=>{
+    const pc=i<3?['gold','silver','bronze'][i]:'other';
     const rt=getRating(r.totalScore);
-    rl.innerHTML+=`<div class="rank-item">
-      <div class="rpos ${pc}">${i+1}</div>
-      <div class="rinfo"><div class="rdmz">${r.dmz}</div><div class="rmeta">${r.inspector||''}</div></div>
-      <div class="rbar"><div class="rbarfill" style="width:${r.totalScore}%;background:${rt.color}"></div></div>
+    rl.innerHTML+=`<div class="rank-item" onclick="showDmzDetail('${r.dmz}',rows)">
+      <div class="rpos ${pc}">${medals[i]||i+1}</div>
+      <div class="rinfo"><div class="rdmz">${r.dmz}</div><div class="rmeta">${r.frente||''} · ${r.inspector||''}</div></div>
+      <div class="rbar-wrap"><div class="rbar-fill" style="width:${r.totalScore}%;background:${rt.color}"></div></div>
       <div class="rscore" style="color:${rt.color}">${r.totalScore}</div>
     </div>`;
   });
 
-  // Bar chart
+  // BAR CHART
   const top=grouped.slice(0,15);
-  if(barC)barC.destroy();
-  barC=new Chart(document.getElementById('barChart'),{
+  destroyChart('bar');
+  charts.bar=new Chart(document.getElementById('barChart'),{
     type:'bar',
-    data:{labels:top.map(r=>r.dmz),datasets:[{data:top.map(r=>Number(r.totalScore)),backgroundColor:top.map(r=>getRating(r.totalScore).color),borderRadius:2,borderSkipped:false}]},
-    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#555',font:{size:8}},grid:{color:'#1a1a1a'}},y:{min:0,max:100,ticks:{color:'#555',font:{size:8}},grid:{color:'#222'}}}}
+    data:{labels:top.map(r=>r.dmz),datasets:[{data:top.map(r=>Number(r.totalScore)),backgroundColor:top.map(r=>getRating(r.totalScore).color),borderRadius:3,borderSkipped:false}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#444',font:{size:8}},grid:{color:'#111'}},y:{min:0,max:100,ticks:{color:'#444',font:{size:8}},grid:{color:'#1a1a1a'}}}}
   });
 
-  // Pie
+  // PIE
   const cnt={EXCELENTE:0,BUENO:0,REGULAR:0,DEFICIENTE:0};
   rows.forEach(r=>cnt[getRating(r.totalScore).label]++);
-  if(pieC)pieC.destroy();
-  pieC=new Chart(document.getElementById('pieChart'),{
+  destroyChart('pie');
+  charts.pie=new Chart(document.getElementById('pieChart'),{
     type:'doughnut',
-    data:{labels:Object.keys(cnt),datasets:[{data:Object.values(cnt),backgroundColor:['#27AE60','#2980B9','#F39C12','#C0392B'],borderWidth:0}]},
-    options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#777',font:{size:9},padding:10}}}}
+    data:{labels:Object.keys(cnt),datasets:[{data:Object.values(cnt),backgroundColor:['#27AE60','#2980B9','#F39C12','#C0392B'],borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#666',font:{size:9},padding:8}}}}
   });
 
-  // Radar - parse catScores string "1:earned/max | 2:earned/max ..."
+  // RADAR
+  const catKeys=['1','2','3','4'];
   const catLabels=['Herramientas','Residuos','Señalización','Orden General'];
-  const catIdxMap=[0,1,2,3];
-  const catSums=[0,0,0,0];
-  const catMaxes=[20,20,30,30];
-  let catCount=0;
+  const catSums=[0,0,0,0];let catCnt=0;
   rows.forEach(r=>{
-    if(!r.catScores)return;
-    catCount++;
-    const parts=r.catScores.split('|');
-    parts.forEach((p,i)=>{
-      if(i>3)return;
-      const m=p.match(/(\d+)\/(\d+)/);
+    if(!r.catScores)return;catCnt++;
+    r.catScores.split('|').forEach((p,i)=>{
+      if(i>3)return;const m=p.match(/(\d+)\/(\d+)/);
       if(m)catSums[i]+=Number(m[1])/Number(m[2])*100;
     });
   });
-  const catAvgs=catSums.map(s=>catCount?Math.round(s/catCount):0);
-
-  if(radC)radC.destroy();
-  radC=new Chart(document.getElementById('radarChart'),{
+  const catAvgs=catSums.map(s=>catCnt?Math.round(s/catCnt):0);
+  destroyChart('radar');
+  charts.radar=new Chart(document.getElementById('radarChart'),{
     type:'radar',
-    data:{labels:catLabels,datasets:[{label:'Promedio %',data:catAvgs,backgroundColor:'rgba(245,196,0,.12)',borderColor:'#F5C400',pointBackgroundColor:'#F5C400',pointRadius:3}]},
-    options:{responsive:true,scales:{r:{min:0,max:100,ticks:{color:'#444',backdropColor:'transparent',font:{size:8}},grid:{color:'#222'},pointLabels:{color:'#888',font:{size:9}}}},plugins:{legend:{display:false}}}
+    data:{labels:catLabels,datasets:[{label:'%',data:catAvgs,backgroundColor:'rgba(245,196,0,.1)',borderColor:'#F5C400',pointBackgroundColor:'#F5C400',pointRadius:3,borderWidth:2}]},
+    options:{responsive:true,scales:{r:{min:0,max:100,ticks:{color:'#333',backdropColor:'transparent',font:{size:7}},grid:{color:'#1a1a1a'},pointLabels:{color:'#666',font:{size:9}}}},plugins:{legend:{display:false}}}
   });
 
-  // History table
+  // LINE CHART — evolución (últimas 20 auditorías ordenadas por fecha)
+  const recent=[...rows].sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp)).slice(-20);
+  destroyChart('line');
+  charts.line=new Chart(document.getElementById('lineChart'),{
+    type:'line',
+    data:{
+      labels:recent.map(r=>r.dmz),
+      datasets:[{
+        label:'Puntaje',data:recent.map(r=>Number(r.totalScore)),
+        borderColor:'#F5C400',backgroundColor:'rgba(245,196,0,.08)',
+        pointBackgroundColor:recent.map(r=>getRating(r.totalScore).color),
+        pointRadius:4,tension:.3,fill:true,borderWidth:2
+      }]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#444',font:{size:7}},grid:{color:'#111'}},y:{min:0,max:100,ticks:{color:'#444',font:{size:8}},grid:{color:'#1a1a1a'}}}}
+  });
+
+  // AREA CHARTS
+  ['CHANCADO','MOLIENDA','PEBLES'].forEach(area=>{
+    const key=area.toLowerCase();
+    const aRows=rows.filter(r=>r.frente===area);
+    const byG={};
+    aRows.forEach(r=>{if(!byG[r.dmz]||Number(r.totalScore)>Number(byG[r.dmz].totalScore))byG[r.dmz]=r;});
+    const gArr=Object.values(byG).sort((a,b)=>Number(b.totalScore)-Number(a.totalScore));
+    const avgA=gArr.length?Math.round(gArr.reduce((s,r)=>s+Number(r.totalScore),0)/gArr.length):0;
+    document.getElementById(`a${area.charAt(0)+area.slice(1).toLowerCase()}`).textContent=gArr.length?`Prom. ${avgA} pts · ${gArr.length} grupos`:'Sin datos';
+    destroyChart(`area_${key}`);
+    if(gArr.length){
+      charts[`area_${key}`]=new Chart(document.getElementById(`bar${area.charAt(0)+area.slice(1).toLowerCase()}`),{
+        type:'bar',
+        data:{labels:gArr.map(r=>r.dmz),datasets:[{data:gArr.map(r=>Number(r.totalScore)),backgroundColor:gArr.map(r=>getRating(r.totalScore).color),borderRadius:2,borderSkipped:false}]},
+        options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#444',font:{size:7}},grid:{color:'#111'}},y:{min:0,max:100,ticks:{color:'#444',font:{size:7}},grid:{color:'#1a1a1a'}}}}
+      });
+    }
+  });
+
+  // HISTORY TABLE
   const tb=document.getElementById('histBody');tb.innerHTML='';
   document.getElementById('histCount').textContent=`${rows.length} registros`;
   rows.forEach(r=>{
     const rt=getRating(r.totalScore);
     tb.innerHTML+=`<tr>
-      <td>${r.fecha||r.timestamp||''}</td>
-      <td><strong>${r.dmz}</strong></td>
-      <td>${r.inspector||''}</td>
-      <td>${r.frente||''}</td>
+      <td>${r.timestamp||r.fecha||''}</td>
+      <td><strong style="cursor:pointer;color:var(--yellow)" onclick="showDmzDetail('${r.dmz}')">${r.dmz}</strong></td>
+      <td>${r.frente||''}</td><td>${r.inspector||''}</td>
       <td><strong style="color:${rt.color}">${r.totalScore}</strong></td>
-      <td><span class="sbadge" style="background:${rt.color}20;color:${rt.color}">${rt.label}</span></td>
-      <td style="font-size:9px;color:#555">${(r.catScores||'').replace(/\|/g,'·')}</td>
+      <td><span class="sbadge" style="background:${rt.color}18;color:${rt.color}">${rt.label}</span></td>
+      <td>${r.fotos||0} 📷</td>
+      <td>${r.incumplimientos||0}</td>
+      <td style="font-size:9px;color:#444">${(r.catScores||'').replace(/\|/g,'·')}</td>
     </tr>`;
   });
+}
+
+function showDmzDetail(dmz){
+  const dmzRows=filteredRows.filter(r=>r.dmz===dmz).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  if(!dmzRows.length)return;
+  const scores=dmzRows.map(r=>Number(r.totalScore));
+  const best=Math.max(...scores);
+  const avg=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+  const last=scores[0];
+  const rt=getRating(last);
+
+  document.getElementById('modalTitle').textContent=`${dmz} — Historial Detallado`;
+  document.getElementById('modalBody').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:#0a0a0a;padding:10px;border-radius:3px;text-align:center">
+        <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Último</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:${rt.color}">${last}</div>
+      </div>
+      <div style="background:#0a0a0a;padding:10px;border-radius:3px;text-align:center">
+        <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Mejor</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--yellow)">${best}</div>
+      </div>
+      <div style="background:#0a0a0a;padding:10px;border-radius:3px;text-align:center">
+        <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Promedio</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--blue2)">${avg}</div>
+      </div>
+    </div>
+    <div class="hist-mini">
+      <div class="hist-mini-title">Todas las inspecciones</div>
+      ${dmzRows.map(r=>{
+        const rr=getRating(r.totalScore);
+        return `<div class="hist-mini-row">
+          <div style="flex:1">
+            <div style="font-size:11px;font-weight:600">${r.inspector||''}</div>
+            <div style="font-size:9px;color:#444">${r.frente||''} · ${r.fecha||r.timestamp||''}</div>
+          </div>
+          <span class="sbadge" style="background:${rr.color}18;color:${rr.color}">${r.totalScore} — ${rr.label}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal(){document.getElementById('modalOverlay').classList.remove('active');}
+
+// ── EXPORT EXCEL ──
+function exportExcel(){
+  if(!filteredRows.length){alert('No hay datos para exportar.');return;}
+  const data=filteredRows.map(r=>({
+    'Fecha/Hora':r.timestamp,'Grupo DMZ':r.dmz,'Área':r.frente,'Inspector':r.inspector,
+    'Fecha':r.fecha,'Puntaje Total':Number(r.totalScore),'Calificación':r.calificacion,
+    'Fotos':Number(r.fotos||0),'Incumplimientos':Number(r.incumplimientos||0),'Categorías':r.catScores
+  }));
+  const ws=XLSX.utils.json_to_sheet(data);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,'Auditorías',ws);
+  XLSX.writeFile(wb,`DMZ_Auditorias_${new Date().toLocaleDateString('es-PE').replace(/\//g,'-')}.xlsx`);
+}
+
+// ── EXPORT PDF ──
+function exportPDF(){
+  window.print();
 }
 
 loadData();
 setInterval(loadData,30000);
 </script>
+
+<style>
+@media print{
+  .header,.filter-bar,.hacts,.btn-hdr{display:none!important;}
+  body{background:#fff;color:#000;}
+  .panel{border:1px solid #ddd;break-inside:avoid;}
+  .kpi{border:1px solid #ddd;}
+  .main{padding:0;}
+}
+</style>
 </body>
 </html>
