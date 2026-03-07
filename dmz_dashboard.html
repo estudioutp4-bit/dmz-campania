@@ -354,14 +354,15 @@ canvas{max-height:185px;}
 <div class="toast" id="toast"></div>
 
 <script>
-if(sessionStorage.getItem('dmz_auth')!=='true'||sessionStorage.getItem('dmz_role')!=='admin'){window.location.href='dmz_login.html';}
-
+function getSession(k){return sessionStorage.getItem(k)||localStorage.getItem(k)||'';}
+const _auth=getSession('dmz_auth'),_role=getSession('dmz_role');
+if(_auth!=='true'||_role!=='admin'){window.location.href='dmz_login.html';}
+function logout(){sessionStorage.clear();localStorage.clear();window.location.href='dmz_login.html';}
 const API       = 'https://api.sheetbest.com/sheets/62c2355a-e3b6-4726-a0d3-343a25a5e41d';
 const API_USERS = 'https://api.sheetbest.com/sheets/62c2355a-e3b6-4726-a0d3-343a25a5e41d/tabs/usuarios';
 let allRows=[], filteredRows=[], allUsers=[], charts={};
 let currentExportType='excel', currentView='general', editingUser=null;
 
-function logout(){sessionStorage.clear();window.location.href='dmz_login.html';}
 function getRating(s){s=Number(s);if(s>=90)return{l:'EXCELENTE',c:'#27AE60'};if(s>=75)return{l:'BUENO',c:'#2980B9'};if(s>=50)return{l:'REGULAR',c:'#F39C12'};return{l:'DEFICIENTE',c:'#C0392B'};}
 function dc(k){if(charts[k]){charts[k].destroy();delete charts[k];}}
 function closeModal(id){document.getElementById(id).classList.remove('active');}
